@@ -35,7 +35,7 @@ export function MobileNav() {
       <SheetContent
         side="right"
         aria-describedby={undefined}
-        className="w-full max-w-xs p-0"
+        className="w-full max-w-xs overscroll-contain p-0"
       >
         <SheetHeader className="h-16 justify-center border-b border-border px-5">
           <SheetTitle>
