@@ -1,0 +1,11 @@
+---
+description: Orchestrix agent rules — entry point (indexes docs/rules/)
+alwaysApply: true
+---
+
+All agent rules for this repository live in `AGENTS.md` at the repo root — start there.
+
+- `AGENTS.md` indexes the rulesets in `docs/rules/` (folder structure, design system, …) and lists the non-negotiables.
+- Before writing any code, read the rules relevant to your change — at minimum `docs/rules/folder-structure.md` (where code goes) and, for UI work, `docs/rules/design-system.md`.
+- When reviewing code, flag violations of those rules.
+- Never duplicate rules into this file; it only points at the source of truth.
