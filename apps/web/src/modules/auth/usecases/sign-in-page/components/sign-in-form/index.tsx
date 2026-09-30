@@ -12,7 +12,9 @@ import { AuthField } from "@/modules/auth/components/auth-field";
 import { AuthInput } from "@/modules/auth/components/auth-input";
 import { PasswordInput } from "@/modules/auth/components/password-input";
 import { SubmitButton } from "@/modules/auth/components/submit-button";
+import { FormError } from "@/modules/auth/components/form-error";
 import { authService } from "@/modules/auth/services/auth-service";
+import { AuthErrorCode } from "@/modules/auth/types/auth-service";
 import { ROUTES } from "@/modules/core/constants/routes";
 
 import { signInSchema, type SignInValues } from "../../schemas/sign-in-schema";
@@ -24,7 +26,7 @@ export function SignInForm() {
     control,
     handleSubmit,
     setError,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: { email: "", password: "" },
@@ -35,11 +37,11 @@ export function SignInForm() {
   const onSubmit = handleSubmit(async (values) => {
     const result = await authService.signIn(values);
     if (!result.ok) {
-      setError(
-        "password",
-        { message: result.error.message },
-        { shouldFocus: true },
-      );
+      const field =
+        result.error.code === AuthErrorCode.INVALID_CREDENTIALS
+          ? "password"
+          : "root";
+      setError(field, { message: result.error.message }, { shouldFocus: true });
       return;
     }
     startNavigation(() => router.push(ROUTES.HOME));
@@ -88,6 +90,7 @@ export function SignInForm() {
           )}
         </AuthField>
 
+        <FormError message={errors.root?.message} />
         <SubmitButton isPending={isPending}>Sign in</SubmitButton>
       </FieldSet>
     </form>
