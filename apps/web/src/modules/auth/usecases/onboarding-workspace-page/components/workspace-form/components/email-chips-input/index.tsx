@@ -81,7 +81,7 @@ export function EmailChipsInput({
 
     if (additions.length > 0) onChange([...value, ...additions]);
     setDraft(invalid.join(", "));
-    setDraftError(
+    showDraftError(
       invalid.length > 0 ? `${invalid[0]} isn’t a valid email.` : null,
     );
   };
@@ -137,7 +137,7 @@ export function EmailChipsInput({
           </ul>
         ) : null}
         <input
-          ref={inputRef}
+          ref={setInputRef}
           id={id}
           type="text"
           inputMode="email"
@@ -147,7 +147,7 @@ export function EmailChipsInput({
           placeholder={value.length === 0 ? "name@company.com…" : undefined}
           onChange={(event) => {
             setDraft(event.target.value);
-            if (draftError) setDraftError(null);
+            if (draftError) showDraftError(null);
           }}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}

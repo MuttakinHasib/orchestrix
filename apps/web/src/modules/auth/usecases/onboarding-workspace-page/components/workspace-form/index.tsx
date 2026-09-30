@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, type FormEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { cn } from "cn";
@@ -67,15 +67,7 @@ export function WorkspaceForm() {
   const isPending = isSubmitting || isNavigating;
   const initial = name.trim().charAt(0).toUpperCase();
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (isSlugTaken) {
-      setFocus("slug");
-      return;
-    }
-    if (hasInvalidInvite) {
-      setFocus("invites");
-      return;
-    }
+  const submit = handleSubmit(async (values) => {
     const result = await authService.createOrganization(values);
     if (!result.ok) {
       const field =
@@ -86,6 +78,17 @@ export function WorkspaceForm() {
     toast.success(`${result.value.name} is ready.`);
     startNavigation(() => router.push(ROUTES.HOME));
   });
+
+  // Problems the schema can't see are caught before submitting starts, while
+  // the fields are still enabled and can take focus.
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (isSlugTaken || hasInvalidInvite) {
+      event.preventDefault();
+      setFocus(isSlugTaken ? "slug" : "invites");
+      return;
+    }
+    void submit(event);
+  };
 
   return (
     <form onSubmit={onSubmit} noValidate className="w-full">
