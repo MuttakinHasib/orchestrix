@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import "@repo/ui/styles.css";
+
+@source "../../../../packages/ui/src";
+
+/* Marketing and auth type scale — larger than the product UI scale in @repo/ui */
+@theme {
+  --text-hero: 4.25rem; /* 68px */
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.035em;
+  --text-headline: 2.75rem; /* 44px */
+  --text-headline--line-height: 1.1;
+  --text-headline--letter-spacing: -0.03em;
+  --text-section: 2.25rem; /* 36px */
+  --text-section--line-height: 1.1;
+  --text-section--letter-spacing: -0.025em;
+  --text-title: 1.625rem; /* 26px */
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: -0.02em;
+  --text-lead: 1.0625rem; /* 17px */
+  --text-lead--line-height: 1.5;
+}
+
+@layer base {
+  /* No double-tap-to-zoom delay on controls. */
+  a,
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* Plain text links get a visible keyboard ring; buttons opt out via `outline-none`. */
+  a:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
