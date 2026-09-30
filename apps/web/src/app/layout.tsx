@@ -27,7 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html
+      lang="en"
+      className="dark motion-safe:scroll-smooth"
+      data-scroll-behavior="smooth"
+    >
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
         <Toaster position="bottom-right" />

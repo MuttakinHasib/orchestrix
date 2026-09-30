@@ -1,3 +1,5 @@
-const Page = () => <main className="grid min-h-dvh place-items-center">Orchestrix</main>;
+import { HomePage } from "@/modules/home";
+
+const Page = () => <HomePage />;
 
 export default Page;
