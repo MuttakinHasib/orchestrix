@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Button } from "@repo/ui/components/base/button";
 
+import { AccentGlow } from "@/modules/core/components/accent-glow";
 import { ROUTES } from "@/modules/core/constants/routes";
 import { ProductFrame } from "@/modules/home/components/product-frame";
 import { PRODUCT_SHOTS } from "@/modules/home/constants/product-shots";
@@ -10,10 +11,7 @@ import { PRODUCT_SHOTS } from "@/modules/home/constants/product-shots";
 export function Hero() {
   return (
     <section className="relative flex flex-col items-center gap-5.5 overflow-hidden px-4 pt-16 text-center sm:px-6 sm:pt-24 lg:px-12">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-65 left-1/2 h-150 w-275 max-w-[200vw] -translate-x-1/2 bg-[radial-gradient(closest-side,var(--accent-soft),transparent)]"
-      />
+      <AccentGlow className="top-65 h-150 w-275" />
 
       <p className="relative inline-flex min-h-7 items-center gap-2 rounded-full border border-input px-3 py-1 text-[12.5px] text-muted-foreground">
         <span

@@ -2,16 +2,14 @@ import Link from "next/link";
 
 import { Button } from "@repo/ui/components/base/button";
 
+import { AccentGlow } from "@/modules/core/components/accent-glow";
 import { BrandMark } from "@/modules/core/components/brand-mark";
 import { ROUTES } from "@/modules/core/constants/routes";
 
 export function ComingSoonPage() {
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-secondary">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-60 left-1/2 h-160 w-225 max-w-[200vw] -translate-x-1/2 bg-[radial-gradient(closest-side,var(--accent-soft),transparent)]"
-      />
+      <AccentGlow className="-top-60 h-160 w-225" />
       <header className="relative flex h-16 items-center px-4 sm:px-10">
         <Link href={ROUTES.HOME} aria-label="Orchestrix home">
           <BrandMark />
