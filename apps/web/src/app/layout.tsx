@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 
 import { Toaster } from "@repo/ui/components/base/sonner";
@@ -19,6 +19,11 @@ export const metadata: Metadata = {
   title: { default: "Orchestrix", template: "%s · Orchestrix" },
   description:
     "Plan engineering work, automate what happens next, and see exactly what every automation did.",
+};
+
+// Matches the dark page background; browser chrome can't read CSS tokens.
+export const viewport: Viewport = {
+  themeColor: "#0b0c0e",
 };
 
 export default function RootLayout({

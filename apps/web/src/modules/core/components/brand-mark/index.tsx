@@ -18,6 +18,7 @@ export function BrandMark({ size = "md", className }: BrandMarkProps) {
 
   return (
     <span
+      translate="no"
       className={cn(
         "inline-flex items-center gap-2.5 font-semibold tracking-[-0.01em] text-foreground",
         text,

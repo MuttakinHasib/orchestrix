@@ -22,6 +22,13 @@
 }
 
 @layer base {
+  /* No double-tap-to-zoom delay on controls. */
+  a,
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
   /* Plain text links get a visible keyboard ring; buttons opt out via `outline-none`. */
   a:focus-visible {
     outline: 2px solid var(--ring);
