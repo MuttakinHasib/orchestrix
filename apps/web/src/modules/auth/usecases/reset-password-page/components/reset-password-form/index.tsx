@@ -15,6 +15,7 @@ import { PasswordInput } from "@/modules/auth/components/password-input";
 import { PasswordStrengthMeter } from "@/modules/auth/components/password-strength-meter";
 import { SubmitButton } from "@/modules/auth/components/submit-button";
 import { authService } from "@/modules/auth/services/auth-service";
+import { joinIds } from "@/modules/auth/utils/join-ids";
 import { AuthErrorCode } from "@/modules/auth/types/auth-service";
 import { ROUTES } from "@/modules/core/constants/routes";
 
@@ -70,9 +71,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                   id={id}
                   autoComplete="new-password"
                   aria-invalid={isInvalid}
-                  aria-describedby={
-                    errorId ? `${strengthId} ${errorId}` : strengthId
-                  }
+                  aria-describedby={joinIds(strengthId, errorId)}
                 />
                 <PasswordStrengthMeter id={strengthId} password={field.value} />
               </>

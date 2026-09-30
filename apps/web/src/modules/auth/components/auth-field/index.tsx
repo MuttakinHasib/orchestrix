@@ -1,6 +1,5 @@
 "use client";
 
-import { CircleAlert } from "lucide-react";
 import { useId, type ReactNode } from "react";
 import {
   Controller,
@@ -10,7 +9,9 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
-import { Field, FieldError, FieldLabel } from "@repo/ui/components/base/field";
+import { Field, FieldLabel } from "@repo/ui/components/base/field";
+
+import { InlineError } from "@/modules/auth/components/inline-error";
 
 export interface AuthFieldControlProps<
   TValues extends FieldValues,
@@ -76,13 +77,7 @@ export function AuthField<
             errorId: fieldState.invalid ? errorId : undefined,
           })}
           {fieldState.error?.message ? (
-            <FieldError
-              id={errorId}
-              className="flex items-center gap-1.5 text-[12.5px]"
-            >
-              <CircleAlert aria-hidden className="size-3.25 shrink-0" />
-              {fieldState.error.message}
-            </FieldError>
+            <InlineError id={errorId}>{fieldState.error.message}</InlineError>
           ) : null}
         </Field>
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleAlert, X } from "lucide-react";
+import { X } from "lucide-react";
 import {
   useId,
   useRef,
@@ -10,6 +10,9 @@ import {
   type Ref,
 } from "react";
 import { z } from "zod";
+
+import { InlineError } from "@/modules/auth/components/inline-error";
+import { joinIds } from "@/modules/auth/utils/join-ids";
 
 import { InputFrame } from "../input-frame";
 
@@ -105,9 +108,7 @@ export function EmailChipsInput({
     commit(`${draft} ${event.clipboardData.getData("text")}`);
   };
 
-  const describedBy =
-    [draftError ? draftErrorId : null, errorId].filter(Boolean).join(" ") ||
-    undefined;
+  const describedBy = joinIds(draftError ? draftErrorId : null, errorId);
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -161,14 +162,7 @@ export function EmailChipsInput({
         />
       </InputFrame>
       {draftError ? (
-        <p
-          id={draftErrorId}
-          role="alert"
-          className="flex items-center gap-1.5 text-[12.5px] text-destructive"
-        >
-          <CircleAlert aria-hidden className="size-3.25 shrink-0" />
-          {draftError}
-        </p>
+        <InlineError id={draftErrorId}>{draftError}</InlineError>
       ) : null}
     </div>
   );

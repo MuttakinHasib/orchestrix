@@ -15,6 +15,7 @@ import { AuthField } from "@/modules/auth/components/auth-field";
 import { FormError } from "@/modules/auth/components/form-error";
 import { SubmitButton } from "@/modules/auth/components/submit-button";
 import { authService } from "@/modules/auth/services/auth-service";
+import { joinIds } from "@/modules/auth/utils/join-ids";
 import { AuthErrorCode } from "@/modules/auth/types/auth-service";
 import { ROUTES } from "@/modules/core/constants/routes";
 
@@ -156,9 +157,7 @@ export function WorkspaceForm() {
                       field.onChange(next);
                     }}
                     aria-invalid={isFlagged}
-                    aria-describedby={[statusId, errorId]
-                      .filter(Boolean)
-                      .join(" ")}
+                    aria-describedby={joinIds(statusId, errorId)}
                     className="h-10 min-w-0 flex-1 bg-transparent px-2.5 font-mono text-lg outline-none placeholder:text-muted-foreground/75 sm:text-[12.5px]"
                   />
                   <span
