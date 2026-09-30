@@ -67,8 +67,8 @@ export function ExecutionCard() {
         })}
       </ol>
 
+      {/* Drawn as the app's action, but read as text: nothing here is clickable. */}
       <span
-        aria-hidden
         className={cn(
           buttonVariants(),
           "pointer-events-none mt-1 w-fit text-[12.5px]",
