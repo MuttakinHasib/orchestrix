@@ -10,6 +10,10 @@ injection stripped; they are the canonical spec for the implementation in
   space/radius/elevation, icons. Imports the Kit in both modes.
 - `orchestrix-kit-v2.dc.html` — component specs (buttons, inputs, menus,
   badges, table, command menu, toasts, overlays, empty/skeleton states).
+- `orchestrix-home-and-auth.dc.html` — screens 5.1–5.5: the public home page,
+  sign in, sign up, forgot password and onboarding (create workspace). Its
+  product shots embed the Work Board and Workflow Builder screens, which stay
+  in the Claude Design project until those features are built.
 
 `support.js` (also imported by the design files) is the generic
 `dc-runtime` build — a React-UMD bootstrapper that parses `<x-dc>` markup,
@@ -24,8 +28,11 @@ here.
 | Tokens (both modes, type scale, radius, elevation) | `packages/ui/styles.css` |
 | shadcn primitives, themed to the Kit | `packages/ui/src/components/base/<name>/index.tsx` |
 | Orchestrix blocks (status, issue status, priority, label chip, actor mark) | `packages/ui/src/components/blocks/<name>/index.tsx` |
-| Showcase (the design doc rebuilt as a live page) | `apps/web/app/page.tsx` + `apps/web/components/kit-demos.tsx` |
-| Fonts | Geist / Geist Mono via `next/font/local` in `apps/web/app/layout.tsx` |
+| Showcase (the design doc rebuilt as a live page, at `/design-system`) | `apps/web/src/modules/design-system` |
+| Home page (5.1) | `apps/web/src/modules/home` |
+| Auth and onboarding (5.2–5.5) | `apps/web/src/modules/auth` |
+| Brand mark, brand icons, route constants | `apps/web/src/modules/core` |
+| Fonts | Geist / Geist Mono via `next/font/local` in `apps/web/src/app/layout.tsx` |
 
 Import pattern: `@repo/ui/components/base/button`,
 `@repo/ui/components/blocks/status-badge`, or the `@/components/...` alias

@@ -75,7 +75,7 @@ import {
   ThemeToggle,
   ToastsDemo,
   TooltipDemo,
-} from "../components/kit-demos";
+} from "./components/kit-demos";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -210,7 +210,7 @@ const ALL_ICONS: { icon: LucideIcon; label: string; accent?: boolean }[] = [
   ...NODE_ICONS,
 ];
 
-export default function DesignSystemPage() {
+export function DesignSystemPage() {
   return (
     <main className="mx-auto flex max-w-300 flex-col gap-6 px-6 py-12">
       {/* Cover */}
