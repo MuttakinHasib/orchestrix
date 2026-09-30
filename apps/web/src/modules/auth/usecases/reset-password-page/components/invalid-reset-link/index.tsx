@@ -12,7 +12,7 @@ export function InvalidResetLink() {
         title="This reset link isn’t valid"
         description="It may have expired or already been used. Request a new one to set your password."
       />
-      <Button asChild className="h-10 w-full rounded-[8px] text-[13.5px]">
+      <Button asChild size="xl" className="w-full">
         <Link href={ROUTES.FORGOT_PASSWORD}>Request a new link</Link>
       </Button>
     </>

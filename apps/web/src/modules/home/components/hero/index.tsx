@@ -35,16 +35,17 @@ export function Hero() {
       </p>
 
       <div className="relative mt-1.5 flex flex-wrap justify-center gap-2.5">
-        <Button asChild className="h-10.5 rounded-[8px] px-4.5 text-sm">
+        <Button asChild size="xl" className="h-10.5 px-4.5 text-sm">
           <Link href={ROUTES.SIGN_UP}>
             Start free
-            <ArrowRight className="size-3.75" />
+            <ArrowRight aria-hidden />
           </Link>
         </Button>
         <Button
           asChild
           variant="secondary"
-          className="h-10.5 rounded-[8px] px-4.5 text-sm"
+          size="xl"
+          className="h-10.5 px-4.5 text-sm"
         >
           <Link href={ROUTES.COMING_SOON}>Book a demo</Link>
         </Button>

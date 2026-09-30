@@ -14,9 +14,10 @@ export function SubmitButton({ isPending, children }: SubmitButtonProps) {
       type="submit"
       disabled={isPending}
       aria-busy={isPending}
-      className="h-10 w-full rounded-[8px] text-[13.5px]"
+      size="xl"
+      className="w-full"
     >
-      {isPending ? <Spinner aria-hidden className="size-3.5" /> : null}
+      {isPending ? <Spinner aria-hidden /> : null}
       {children}
     </Button>
   );

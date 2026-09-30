@@ -29,7 +29,7 @@ export function MobileNav() {
           className="md:hidden"
           aria-label="Open menu"
         >
-          <Menu className="size-4.5" />
+          <Menu />
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -59,10 +59,10 @@ export function MobileNav() {
           </ul>
         </nav>
         <SheetFooter className="border-t border-border p-5">
-          <Button asChild variant="secondary" className="h-10 rounded-[8px]">
+          <Button asChild variant="secondary" size="xl">
             <Link href={ROUTES.SIGN_IN}>Sign in</Link>
           </Button>
-          <Button asChild className="h-10 rounded-[8px]">
+          <Button asChild size="xl">
             <Link href={ROUTES.SIGN_UP}>Start free</Link>
           </Button>
         </SheetFooter>

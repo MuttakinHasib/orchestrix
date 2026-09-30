@@ -74,7 +74,7 @@ export function ExecutionCard() {
           "pointer-events-none mt-1 w-fit text-[12.5px]",
         )}
       >
-        <RotateCw className="size-3" />
+        <RotateCw aria-hidden />
         Retry from step 4
       </span>
     </figure>

@@ -49,13 +49,10 @@ export function OAuthButton({ provider, children }: OAuthButtonProps) {
       disabled={isPending}
       aria-busy={isPending}
       onClick={handleClick}
-      className="h-10 w-full gap-2.5 rounded-[8px] text-[13.5px]"
+      size="xl"
+      className="w-full gap-2.5"
     >
-      {isPending ? (
-        <Spinner aria-hidden className="size-4" />
-      ) : (
-        <Icon aria-hidden className="size-4" />
-      )}
+      {isPending ? <Spinner aria-hidden /> : <Icon aria-hidden />}
       {children}
     </Button>
   );

@@ -56,7 +56,7 @@ export function CheckEmail({ email }: CheckEmailProps) {
       />
 
       <div className="flex w-full flex-col gap-2">
-        <Button asChild className="h-10 w-full rounded-[8px] text-[13.5px]">
+        <Button asChild size="xl" className="w-full">
           <a href="mailto:">Open email app</a>
         </Button>
         <Button
@@ -65,9 +65,10 @@ export function CheckEmail({ email }: CheckEmailProps) {
           disabled={!canResend}
           aria-busy={isResending}
           onClick={handleResend}
-          className="h-10 w-full rounded-[8px] bg-transparent text-[13.5px] text-muted-foreground tabular-nums"
+          size="xl"
+          className="w-full bg-transparent text-muted-foreground tabular-nums"
         >
-          {isResending ? <Spinner aria-hidden className="size-3.5" /> : null}
+          {isResending ? <Spinner aria-hidden /> : null}
           {remaining > 0
             ? `Resend in ${formatCountdown(remaining)}`
             : "Resend link"}
