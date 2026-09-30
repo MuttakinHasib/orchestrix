@@ -52,7 +52,7 @@ export function RequestResetForm({ onSent }: RequestResetFormProps) {
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="name@company.com"
+              placeholder="name@company.com…"
               spellCheck={false}
               aria-invalid={isInvalid}
               aria-describedby={errorId}

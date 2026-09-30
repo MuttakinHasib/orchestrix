@@ -54,7 +54,7 @@ export function SignUpForm() {
               {...field}
               id={id}
               autoComplete="name"
-              placeholder="Ada Lovelace"
+              placeholder="Ada Lovelace…"
               aria-invalid={isInvalid}
               aria-describedby={errorId}
             />
@@ -69,7 +69,7 @@ export function SignUpForm() {
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="name@company.com"
+              placeholder="name@company.com…"
               spellCheck={false}
               aria-invalid={isInvalid}
               aria-describedby={errorId}

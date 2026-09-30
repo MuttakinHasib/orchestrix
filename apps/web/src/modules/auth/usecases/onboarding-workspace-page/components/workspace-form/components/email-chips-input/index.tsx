@@ -144,7 +144,7 @@ export function EmailChipsInput({
           autoComplete="off"
           spellCheck={false}
           value={draft}
-          placeholder={value.length === 0 ? "name@company.com" : undefined}
+          placeholder={value.length === 0 ? "name@company.com…" : undefined}
           onChange={(event) => {
             setDraft(event.target.value);
             if (draftError) setDraftError(null);

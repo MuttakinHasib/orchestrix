@@ -106,7 +106,7 @@ export function WorkspaceForm() {
                 {...field}
                 id={id}
                 autoComplete="organization"
-                placeholder="Acme Inc"
+                placeholder="Acme Inc…"
                 onChange={(event) => {
                   field.onChange(event);
                   if (isSlugCustomized) return;
@@ -133,7 +133,10 @@ export function WorkspaceForm() {
             return (
               <>
                 <InputFrame isInvalid={isFlagged}>
-                  <span className="flex h-10 shrink-0 items-center border-r border-border bg-card px-2.5 font-mono text-xs text-muted-foreground/70">
+                  <span
+                    translate="no"
+                    className="flex h-10 shrink-0 items-center border-r border-border bg-card px-2.5 font-mono text-xs text-muted-foreground/70"
+                  >
                     orchestrix.app/
                   </span>
                   <input
@@ -143,7 +146,7 @@ export function WorkspaceForm() {
                     autoCapitalize="none"
                     spellCheck={false}
                     maxLength={SLUG_MAX_LENGTH}
-                    placeholder="acme"
+                    placeholder="acme…"
                     onChange={(event) => {
                       const next = event.target.value.toLowerCase();
                       setIsSlugCustomized(next.length > 0);
