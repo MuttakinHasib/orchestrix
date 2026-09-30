@@ -1,11 +1,16 @@
 import type { SVGProps } from "react";
 
+/**
+ * GitHub mark (monochrome by brand rule). Follows `currentColor` so it reads
+ * on both themes. Source: thesvg.org, "mono" variant.
+ */
 export function GithubIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
       width={24}
       height={24}
-      viewBox="0 0 24 24"
       fill="currentColor"
       aria-hidden
       {...props}

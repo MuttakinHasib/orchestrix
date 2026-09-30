@@ -60,6 +60,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.9.1
         version: 5.9.1(react-hook-form@7.89.0(@types/react@19.2.18)(react@19.2.8))(zod@4.6.5)
+      '@repo/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -151,6 +154,28 @@ importers:
       globals:
         specifier: 17.12.0
         version: 17.12.0
+
+  packages/icons:
+    dependencies:
+      react:
+        specifier: 19.2.8
+        version: 19.2.8
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/react':
+        specifier: 19.2.18
+        version: 19.2.18
+      eslint:
+        specifier: 10.9.1
+        version: 10.9.1(jiti@2.7.0)(supports-color@7.2.0)
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
 
   packages/typescript-config: {}
 
@@ -2427,6 +2452,7 @@ packages:
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
+    hasBin: true
 
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
