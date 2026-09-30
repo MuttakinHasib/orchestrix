@@ -16,9 +16,12 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Orchestrix",
+  title: {
+    default: "Orchestrix — Manage the work. Automate the rest.",
+    template: "%s · Orchestrix",
+  },
   description:
-    "Engineering work management and workflow automation — design system",
+    "Orchestrix is where engineering teams plan issues, build workflows that run on every change, and see exactly what each automation did.",
 };
 
 export default function RootLayout({
