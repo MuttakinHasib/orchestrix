@@ -1,6 +1,6 @@
-// Package observability wires the process-wide structured logger, and (later)
-// tracing and metrics providers.
-package observability
+// Package telemetry wires observability: structured logging now, tracing and
+// metrics later.
+package telemetry
 
 import (
 	"log/slog"
