@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Local issue tracker
 .scratch/
+
+# Claude Design exports (local reference only)
+docs/design/
