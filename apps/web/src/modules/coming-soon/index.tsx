@@ -17,7 +17,7 @@ export function ComingSoonPage() {
       </header>
       <main className="relative flex flex-1 flex-col items-center justify-center gap-6 px-4 pb-16 text-center">
         <div className="flex flex-col items-center gap-2">
-          <h1 className="text-[26px] leading-tight font-medium tracking-[-0.02em] text-balance">
+          <h1 className="text-title font-medium text-balance">
             This page isn’t ready yet
           </h1>
           <p className="max-w-sm text-[13.5px] text-pretty text-muted-foreground">

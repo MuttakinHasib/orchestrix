@@ -8,5 +8,3 @@ export const ROUTES = {
   COMING_SOON: "/coming-soon",
   DESIGN_SYSTEM: "/design-system",
 } as const;
-
-export type Route = (typeof ROUTES)[keyof typeof ROUTES];
