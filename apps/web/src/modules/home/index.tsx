@@ -33,7 +33,7 @@ export function HomePage() {
         <LoopStrip />
 
         <div className="bg-background">
-          <div className="mx-auto flex max-w-[1440px] flex-col gap-20 px-4 py-20 sm:px-6 sm:gap-24 sm:py-28 lg:px-12 xl:px-24">
+          <div className="mx-auto flex max-w-360 flex-col gap-20 px-4 py-20 sm:px-6 sm:gap-24 sm:py-28 lg:px-12 xl:px-24">
             <FeatureRow
               id="work"
               eyebrow="Work"
@@ -45,6 +45,7 @@ export function HomePage() {
             <FeatureRow
               id="workflows"
               eyebrow="Workflows"
+              isReversedLayout
               title="Build automations by connecting steps"
               description="Pick a trigger, add conditions, chain actions across GitHub, Slack, email and webhooks. Test any step before you publish."
               visual={
