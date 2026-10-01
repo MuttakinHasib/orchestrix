@@ -1,35 +1,16 @@
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
-
-import { Button } from "@repo/ui/components/base/button";
-
-import { ROUTES } from "@/modules/core/constants/routes";
-import { env } from "@/modules/core/env";
+import { CtaButtons } from "@/modules/home/components/cta-buttons";
 
 export function ClosingCta() {
   return (
     <section className="flex flex-col items-center gap-4.5 border-t border-border bg-background px-4 py-20 text-center sm:px-6 sm:py-28">
-      <h2 className="text-[2rem] leading-[1.1] font-medium tracking-[-0.03em] text-balance sm:text-headline">
-        Put repetitive work on autopilot
+      <h2 className="text-[2.25rem] leading-[1.05] font-medium tracking-[-0.04em] text-balance sm:text-display-sm">
+        Put repetitive work on autopilot.
       </h2>
-      <p className="text-base text-pretty text-muted-foreground sm:text-lg sm:leading-normal">
+      <p className="text-lg leading-normal text-pretty text-muted-foreground">
         Set up your first project and workflow in about ten minutes.
       </p>
-      <div className="mt-1.5 flex flex-wrap justify-center gap-2.5">
-        <Button asChild size="xl" className="h-10.5 px-4.5 text-sm">
-          <Link href={ROUTES.SIGN_UP}>
-            Start free
-            <ArrowRight aria-hidden />
-          </Link>
-        </Button>
-        <Button
-          asChild
-          variant="secondary"
-          size="xl"
-          className="h-10.5 bg-transparent px-4.5 text-sm"
-        >
-          <Link href={env.docsUrl}>Read the docs</Link>
-        </Button>
+      <div className="mt-1.5">
+        <CtaButtons isDocsOutlined />
       </div>
     </section>
   );
