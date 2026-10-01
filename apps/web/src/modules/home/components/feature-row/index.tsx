@@ -1,3 +1,4 @@
+import { cn } from "cn";
 import type { ReactNode } from "react";
 
 interface FeatureRowProps {
@@ -6,6 +7,7 @@ interface FeatureRowProps {
   title: string;
   description: string;
   visual: ReactNode;
+  isReversedLayout?: boolean;
   /** Extra copy under the description, such as a benefit list. */
   children?: ReactNode;
 }
@@ -17,6 +19,7 @@ export function FeatureRow({
   description,
   visual,
   children,
+  isReversedLayout,
 }: FeatureRowProps) {
   const headingId = `${id}-heading`;
 
@@ -24,15 +27,24 @@ export function FeatureRow({
     <section
       id={id}
       aria-labelledby={headingId}
-      className="grid items-center gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-18"
+      className={cn(
+        "grid items-center gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-18",
+        {
+          "lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]": isReversedLayout,
+        },
+      )}
     >
-      <div className="flex max-w-xl flex-col gap-3.5">
-        <p className="font-mono text-[11.5px] tracking-[0.1em] text-accent-text uppercase">
+      <div
+        className={cn("flex max-w-xl flex-col gap-3.5", {
+          "lg:order-last": isReversedLayout,
+        })}
+      >
+        <p className="font-mono text-[11.5px] tracking-widest text-accent-text uppercase">
           {eyebrow}
         </p>
         <h2
           id={headingId}
-          className="text-[1.75rem] leading-[1.1] font-medium tracking-[-0.025em] text-balance sm:text-section"
+          className="text-[1.75rem] leading-[1.1] font-medium -tracking-wide text-balance sm:text-section"
         >
           {title}
         </h2>
