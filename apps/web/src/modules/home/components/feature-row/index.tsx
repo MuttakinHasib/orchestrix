@@ -1,59 +1,50 @@
-import { cn } from "cn";
 import type { ReactNode } from "react";
+
+import { Reveal } from "@/modules/home/components/reveal";
+import { SectionEyebrow } from "@/modules/home/components/section-eyebrow";
 
 interface FeatureRowProps {
   id: string;
+  /** Position in the page's numbered sequence, e.g. "01". */
+  number: string;
   eyebrow: string;
   title: string;
   description: string;
   visual: ReactNode;
-  isReversedLayout?: boolean;
-  /** Extra copy under the description, such as a benefit list. */
-  children?: ReactNode;
 }
 
+/** Copy on the left, a working example on the right. */
 export function FeatureRow({
   id,
+  number,
   eyebrow,
   title,
   description,
   visual,
-  children,
-  isReversedLayout,
 }: FeatureRowProps) {
   const headingId = `${id}-heading`;
 
   return (
-    <section
-      id={id}
-      aria-labelledby={headingId}
-      className={cn(
-        "grid items-center gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-18",
-        {
-          "lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]": isReversedLayout,
-        },
-      )}
-    >
-      <div
-        className={cn("flex max-w-xl flex-col gap-3.5", {
-          "lg:order-last": isReversedLayout,
-        })}
+    <Reveal>
+      <section
+        id={id}
+        aria-labelledby={headingId}
+        className="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)] lg:gap-16"
       >
-        <p className="font-mono text-[11.5px] tracking-widest text-accent-text uppercase">
-          {eyebrow}
-        </p>
-        <h2
-          id={headingId}
-          className="text-[1.75rem] leading-[1.1] font-medium -tracking-wide text-balance sm:text-section"
-        >
-          {title}
-        </h2>
-        <p className="text-base text-pretty text-muted-foreground">
-          {description}
-        </p>
-        {children}
-      </div>
-      {visual}
-    </section>
+        <div className="flex max-w-xl flex-col gap-3.5">
+          <SectionEyebrow number={number} label={eyebrow} />
+          <h2
+            id={headingId}
+            className="text-[2rem] leading-[1.05] font-medium tracking-[-0.035em] text-balance sm:text-headline"
+          >
+            {title}
+          </h2>
+          <p className="text-lg leading-normal text-pretty text-muted-foreground">
+            {description}
+          </p>
+        </div>
+        {visual}
+      </section>
+    </Reveal>
   );
 }
