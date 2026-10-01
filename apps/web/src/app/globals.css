@@ -40,9 +40,7 @@
   --animate-rise: rise 900ms var(--ease-out-soft) both;
   --animate-breathe: breathe 5s ease-in-out infinite alternate;
   --animate-flow: flow 1.6s ease-in-out infinite;
-  --animate-dash-in: dash-in 1.8s linear infinite;
-  --animate-dash-out: dash-out 1.8s linear infinite;
-  --animate-pulse-glow: pulse-glow 2.4s ease-in-out infinite alternate;
+  --animate-dash: dash 1.8s linear infinite;
 
   @keyframes rise {
     from {
@@ -75,24 +73,9 @@
       opacity: 0;
     }
   }
-  @keyframes dash-in {
+  @keyframes dash {
     to {
       stroke-dashoffset: -56;
-    }
-  }
-  @keyframes dash-out {
-    to {
-      stroke-dashoffset: 56;
-    }
-  }
-  @keyframes pulse-glow {
-    from {
-      opacity: 0.6;
-      scale: 0.9;
-    }
-    to {
-      opacity: 1;
-      scale: 1.12;
     }
   }
 }
