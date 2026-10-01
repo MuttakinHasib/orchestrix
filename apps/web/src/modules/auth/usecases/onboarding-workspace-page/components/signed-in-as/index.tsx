@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "cn";
 
+import { TOUCH_TARGET } from "@/modules/auth/constants/touch-target";
 import { ROUTES } from "@/modules/core/constants/routes";
 
 import { useSession } from "./hooks/use-session";
@@ -16,7 +18,10 @@ export function SignedInAs() {
     return (
       <Link
         href={ROUTES.SIGN_IN}
-        className="text-muted-foreground transition-colors hover:text-foreground"
+        className={cn(
+          TOUCH_TARGET,
+          "text-muted-foreground transition-colors hover:text-foreground",
+        )}
       >
         Sign in
       </Link>

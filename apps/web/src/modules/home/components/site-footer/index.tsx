@@ -24,12 +24,12 @@ export function SiteFooter() {
             <h2 id={`footer-${title}`} className="font-medium text-foreground">
               {title}
             </h2>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-2 pointer-coarse:gap-0.5">
               {links.map(({ label, href }) => (
                 <li key={label}>
                   <Link
                     href={href}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground pointer-coarse:min-h-9"
                   >
                     {label}
                   </Link>

@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { cn } from "cn";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -15,6 +16,7 @@ import { SubmitButton } from "@/modules/auth/components/submit-button";
 import { FormError } from "@/modules/auth/components/form-error";
 import { authService } from "@/modules/auth/services/auth-service";
 import { AuthErrorCode } from "@/modules/auth/types/auth-service";
+import { TOUCH_TARGET } from "@/modules/auth/constants/touch-target";
 import { ROUTES } from "@/modules/core/constants/routes";
 
 import { signInSchema, type SignInValues } from "../../schemas/sign-in-schema";
@@ -73,7 +75,10 @@ export function SignInForm() {
           labelAside={
             <Link
               href={ROUTES.FORGOT_PASSWORD}
-              className="text-[12.5px] text-accent-text hover:underline"
+              className={cn(
+                TOUCH_TARGET,
+                "text-[12.5px] text-accent-text hover:underline",
+              )}
             >
               Forgot password?
             </Link>

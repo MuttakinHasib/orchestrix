@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "cn";
 import { useState } from "react";
 
 import { AuthHeading } from "@/modules/auth/components/auth-heading";
+import { TOUCH_TARGET } from "@/modules/auth/constants/touch-target";
 import { ROUTES } from "@/modules/core/constants/routes";
 
 import { CheckEmail } from "../check-email";
@@ -24,7 +26,10 @@ export function ForgotPasswordFlow() {
       <RequestResetForm onSent={setSentTo} />
       <Link
         href={ROUTES.SIGN_IN}
-        className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+        className={cn(
+          TOUCH_TARGET,
+          "text-[13px] text-muted-foreground transition-colors hover:text-foreground",
+        )}
       >
         Back to sign in
       </Link>

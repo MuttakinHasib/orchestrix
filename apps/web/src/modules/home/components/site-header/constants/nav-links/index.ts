@@ -9,5 +9,4 @@ export const NAV_LINKS: readonly NavLink[] = [
   { label: "Integrations", href: "#integrations" },
   { label: "Pricing", href: ROUTES.COMING_SOON },
   { label: "Docs", href: env.docsUrl },
-  { label: "Changelog", href: ROUTES.COMING_SOON },
 ];

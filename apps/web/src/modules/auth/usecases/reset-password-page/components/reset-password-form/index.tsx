@@ -99,7 +99,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         {isTokenRejected ? (
           <Link
             href={ROUTES.FORGOT_PASSWORD}
-            className="-mt-1.5 text-[12.5px] text-accent-text hover:underline"
+            className="-mt-1.5 inline-block text-[12.5px] text-accent-text hover:underline pointer-coarse:py-2"
           >
             Request a new reset link
           </Link>

@@ -129,7 +129,7 @@ export function EmailChipsInput({
                   type="button"
                   aria-label={`Remove ${email}`}
                   onClick={() => remove(email)}
-                  className="grid size-4 cursor-pointer place-items-center rounded-xs text-muted-foreground/70 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  className="grid size-4 cursor-pointer place-items-center pointer-coarse:-m-1.5 pointer-coarse:size-7 rounded-xs text-muted-foreground/70 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <X aria-hidden className="size-2.75" />
                 </button>
@@ -158,7 +158,7 @@ export function EmailChipsInput({
           }}
           aria-invalid={isInvalid || draftError !== null}
           aria-describedby={describedBy}
-          className="h-6 min-w-32 flex-1 bg-transparent text-lg outline-none placeholder:text-muted-foreground/75 sm:text-[13.5px]"
+          className="h-6 min-w-32 flex-1 bg-transparent text-[13.5px] outline-none placeholder:text-muted-foreground/75 pointer-coarse:text-lg"
         />
       </InputFrame>
       {draftError ? (

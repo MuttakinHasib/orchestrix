@@ -80,7 +80,7 @@ export function CheckEmail({ email }: CheckEmailProps) {
 
       <Link
         href={ROUTES.SIGN_IN}
-        className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center pointer-coarse:-my-2.5 pointer-coarse:py-2.5 gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft aria-hidden className="size-3.25" />
         Back to sign in

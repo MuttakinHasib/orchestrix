@@ -16,7 +16,11 @@ export function AuthShell({ aside, children }: AuthShellProps) {
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-secondary text-[13.5px]">
       <AccentGlow className="-top-60 h-160 w-225" />
       <header className="relative flex h-16 items-center justify-between gap-4 px-4 sm:px-10">
-        <Link href={ROUTES.HOME} aria-label="Orchestrix home">
+        <Link
+          href={ROUTES.HOME}
+          aria-label="Orchestrix home"
+          className="pointer-coarse:-my-2 pointer-coarse:py-2"
+        >
           <BrandMark />
         </Link>
         <div className="text-[13px] text-muted-foreground">{aside}</div>
