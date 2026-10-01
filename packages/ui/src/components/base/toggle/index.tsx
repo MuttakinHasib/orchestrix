@@ -15,9 +15,9 @@ const toggleVariants = cva(
           "bg-card text-muted-foreground data-[state=on]:text-accent-text data-[state=on]:shadow-[inset_0_0_0_1px_var(--primary)]",
       },
       size: {
-        default: "h-7 min-w-7 px-2.5 text-[12.5px]",
-        sm: "h-6 min-w-6 px-2 text-xs",
-        lg: "h-8 min-w-8 px-3 text-sm",
+        default: "h-7 min-w-7 px-2.5 text-[12.5px] pointer-coarse:h-9 pointer-coarse:min-w-9",
+        sm: "h-6 min-w-6 px-2 text-xs pointer-coarse:h-8 pointer-coarse:min-w-8",
+        lg: "h-8 min-w-8 px-3 text-sm pointer-coarse:h-10 pointer-coarse:min-w-10",
       },
     },
     defaultVariants: {
