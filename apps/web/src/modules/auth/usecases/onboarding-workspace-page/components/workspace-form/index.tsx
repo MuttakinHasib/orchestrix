@@ -124,7 +124,7 @@ export function WorkspaceForm() {
                 }}
                 aria-invalid={isInvalid}
                 aria-describedby={errorId}
-                className="h-10 min-w-0 flex-1 bg-transparent pr-3 text-lg outline-none placeholder:text-muted-foreground/75 sm:text-[13.5px]"
+                className="h-10 min-w-0 flex-1 bg-transparent pr-3 text-[13.5px] outline-none placeholder:text-muted-foreground/75 pointer-coarse:text-lg"
               />
             </InputFrame>
           )}
@@ -158,7 +158,7 @@ export function WorkspaceForm() {
                     }}
                     aria-invalid={isFlagged}
                     aria-describedby={joinIds(statusId, errorId)}
-                    className="h-10 min-w-0 flex-1 bg-transparent px-2.5 font-mono text-lg outline-none placeholder:text-muted-foreground/75 sm:text-[12.5px]"
+                    className="h-10 min-w-0 flex-1 bg-transparent px-2.5 font-mono text-[12.5px] outline-none placeholder:text-muted-foreground/75 pointer-coarse:text-lg"
                   />
                   <span
                     className="grid w-9 shrink-0 place-items-center"

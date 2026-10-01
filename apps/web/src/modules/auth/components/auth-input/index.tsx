@@ -11,7 +11,7 @@ export function AuthInput({
   return (
     <Input
       className={cn(
-        "h-10 rounded-[8px] bg-background px-3 text-lg sm:text-[13.5px]",
+        "h-10 rounded-[8px] bg-background px-3 text-[13.5px] pointer-coarse:text-lg",
         className,
       )}
       {...props}

@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { cn } from "cn";
 
 import { AuthHeading } from "@/modules/auth/components/auth-heading";
 import { AuthShell } from "@/modules/auth/components/auth-shell";
 import { OAuthButton } from "@/modules/auth/components/oauth-button";
 import { OrDivider } from "@/modules/auth/components/or-divider";
 import { OAuthProvider } from "@/modules/auth/types/auth-service";
+import { TOUCH_TARGET } from "@/modules/auth/constants/touch-target";
 import { ROUTES } from "@/modules/core/constants/routes";
 
 import { SignUpForm } from "./components/sign-up-form";
@@ -17,7 +19,7 @@ export function SignUpPage() {
           Have an account?{" "}
           <Link
             href={ROUTES.SIGN_IN}
-            className="text-foreground hover:underline"
+            className={cn(TOUCH_TARGET, "text-foreground hover:underline")}
           >
             Sign in
           </Link>
