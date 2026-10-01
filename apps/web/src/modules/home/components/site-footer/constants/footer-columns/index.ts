@@ -2,6 +2,8 @@ import { ROUTES } from "@/modules/core/constants/routes";
 import { env } from "@/modules/core/env";
 import type { NavLink } from "@/modules/home/types/nav-link";
 
+const SOURCE_REPOSITORY_URL = "https://github.com/MuttakinHasib/orchestrix";
+
 interface FooterColumn {
   title: string;
   links: readonly NavLink[];
@@ -12,6 +14,7 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
     title: "Product",
     links: [
       { label: "Projects", href: "#work" },
+      { label: "Issues", href: "#work" },
       { label: "Workflows", href: "#workflows" },
       { label: "Executions", href: "#executions" },
       { label: "Integrations", href: "#integrations" },
@@ -23,6 +26,7 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
       { label: "Docs", href: env.docsUrl },
       { label: "API", href: env.docsUrl },
       { label: "Webhooks", href: ROUTES.COMING_SOON },
+      { label: "GitHub", href: SOURCE_REPOSITORY_URL },
       { label: "Status", href: ROUTES.COMING_SOON },
     ],
   },
