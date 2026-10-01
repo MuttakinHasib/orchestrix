@@ -8,17 +8,93 @@
   --text-hero: 4.25rem; /* 68px */
   --text-hero--line-height: 1.02;
   --text-hero--letter-spacing: -0.035em;
+  --text-display: 3.75rem; /* 60px */
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.04em;
+  --text-display-sm: 3.5rem; /* 56px */
+  --text-display-sm--line-height: 1.05;
+  --text-display-sm--letter-spacing: -0.04em;
+  --text-headline-lg: 3rem; /* 48px */
+  --text-headline-lg--line-height: 1.05;
+  --text-headline-lg--letter-spacing: -0.035em;
   --text-headline: 2.75rem; /* 44px */
-  --text-headline--line-height: 1.1;
-  --text-headline--letter-spacing: -0.03em;
-  --text-section: 2.25rem; /* 36px */
+  --text-headline--line-height: 1.05;
+  --text-headline--letter-spacing: -0.035em;
+  --text-section: 2.5rem; /* 40px */
   --text-section--line-height: 1.1;
-  --text-section--letter-spacing: -0.025em;
+  --text-section--letter-spacing: -0.03em;
   --text-title: 1.625rem; /* 26px */
   --text-title--line-height: 1.2;
   --text-title--letter-spacing: -0.02em;
   --text-lead: 1.0625rem; /* 17px */
   --text-lead--line-height: 1.5;
+
+  /* Marketing illustration glows — decoration only, never status. */
+  --color-glow-cool: #6f8cff;
+  --color-glow-cool-tint: #b9d4ff;
+  --color-glow-warm: #ff9a55;
+  --color-glow-warm-tint: #ffd2a8;
+
+  /* Motion. Always applied through `motion-safe:` so reduced motion opts out. */
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --animate-rise: rise 900ms var(--ease-out-soft) both;
+  --animate-breathe: breathe 5s ease-in-out infinite alternate;
+  --animate-flow: flow 1.6s ease-in-out infinite;
+  --animate-dash-in: dash-in 1.8s linear infinite;
+  --animate-dash-out: dash-out 1.8s linear infinite;
+  --animate-pulse-glow: pulse-glow 2.4s ease-in-out infinite alternate;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(6px);
+    }
+  }
+  @keyframes breathe {
+    from {
+      opacity: 0.7;
+      scale: 1;
+    }
+    to {
+      opacity: 1;
+      scale: 1.08;
+    }
+  }
+  @keyframes flow {
+    0% {
+      left: 0;
+      opacity: 0;
+    }
+    20%,
+    80% {
+      opacity: 1;
+    }
+    100% {
+      left: calc(100% - 6px);
+      opacity: 0;
+    }
+  }
+  @keyframes dash-in {
+    to {
+      stroke-dashoffset: -56;
+    }
+  }
+  @keyframes dash-out {
+    to {
+      stroke-dashoffset: 56;
+    }
+  }
+  @keyframes pulse-glow {
+    from {
+      opacity: 0.6;
+      scale: 0.9;
+    }
+    to {
+      opacity: 1;
+      scale: 1.12;
+    }
+  }
 }
 
 @layer base {
