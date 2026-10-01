@@ -29,7 +29,7 @@ logs:
 ## --- app ---
 .PHONY: dev build run
 dev: ## hot-reload api
-	air
+	go tool air
 build: ## static binary
 	CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(BIN) $(CMD)
 run: build

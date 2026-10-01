@@ -10,8 +10,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/MuttakinHasib/orchestrix/apps/engine/internal/config"
-	"github.com/MuttakinHasib/orchestrix/apps/engine/internal/telemetry"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/config"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/telemetry"
 )
 
 func main() {
