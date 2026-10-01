@@ -57,7 +57,7 @@ export function EventLoop() {
           </p>
         </div>
 
-        <ol className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+        <ol className="grid w-full gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4 xl:gap-10">
           {EVENT_LOOP_STEPS.map(
             ({ name, icon: Icon, example, description }, index) => {
               const isActive = index === activeIndex;

@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { cn } from "cn";
 
 import { OrbitMark } from "@/modules/core/components/orbit-mark";
 import { ROUTES } from "@/modules/core/constants/routes";
@@ -17,7 +18,7 @@ import {
 } from "./constants/integration-flows";
 
 const COLUMN_LABEL =
-  "font-mono text-[11px] tracking-[0.1em] text-muted-foreground/70 uppercase lg:absolute lg:-top-8 lg:-translate-x-1/2";
+  "font-mono text-[11px] tracking-[0.1em] text-muted-foreground/70 uppercase xl:absolute xl:-top-8 xl:-translate-x-1/2";
 
 interface NodeColumnProps {
   label: string;
@@ -29,15 +30,19 @@ interface NodeColumnProps {
 /** One side of the diagram: a stacked list on phones, positioned nodes on desktop. */
 function NodeColumn({ label, nodes, columnX }: NodeColumnProps) {
   return (
-    <div className="flex w-full flex-col gap-3 lg:contents">
+    <div className="flex w-full flex-col gap-3 xl:contents">
       <h3 className={COLUMN_LABEL} style={{ left: columnX }}>
         {label}
       </h3>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:contents">
+      <ul
+        className={cn("grid gap-3 sm:grid-cols-2 xl:contents", {
+          "md:grid-cols-3": nodes.length % 3 === 0,
+        })}
+      >
         {nodes.map((node, index) => (
           <li
             key={node.name}
-            className="lg:absolute lg:-translate-1/2"
+            className="xl:absolute xl:-translate-1/2"
             style={{ left: columnX, top: nodeY(index, nodes.length) }}
           >
             <IntegrationNode node={node} />
@@ -50,7 +55,7 @@ function NodeColumn({ label, nodes, columnX }: NodeColumnProps) {
 
 function FlowDown() {
   return (
-    <ArrowDown aria-hidden className="size-4 text-accent-text lg:hidden" />
+    <ArrowDown aria-hidden className="size-4 text-accent-text xl:hidden" />
   );
 }
 
@@ -61,7 +66,7 @@ export function Integrations() {
       aria-labelledby="integrations-heading"
       className="scroll-mt-24 border-t border-border bg-secondary px-4 py-20 sm:px-6 sm:py-28 lg:px-12 xl:px-24"
     >
-      <div className="mx-auto flex max-w-312 flex-col gap-12 lg:gap-20">
+      <div className="mx-auto flex max-w-312 flex-col gap-12 xl:gap-20">
         <div className="flex max-w-155 flex-col gap-3.5">
           <SectionEyebrow number="04" label="Integrations" />
           <h2
@@ -80,14 +85,14 @@ export function Integrations() {
           </p>
           <Link
             href={ROUTES.COMING_SOON}
-            className="mt-1.5 inline-flex w-fit items-center gap-1.5 text-sm text-accent-text hover:underline"
+            className="mt-0.5 inline-flex w-fit items-center gap-1.5 py-1.5 text-sm text-accent-text hover:underline"
           >
             Browse integrations
             <ArrowRight aria-hidden className="size-3.5" />
           </Link>
         </div>
 
-        <Reveal className="relative mx-auto flex w-full max-w-md flex-col items-center gap-5 lg:h-125 lg:w-275 lg:max-w-none lg:gap-0">
+        <Reveal className="relative mx-auto flex w-full max-w-md flex-col items-center gap-5 md:max-w-2xl xl:h-125 xl:w-265 xl:max-w-none xl:gap-0">
           <HubConnectors />
 
           <NodeColumn
@@ -97,7 +102,7 @@ export function Integrations() {
           />
           <FlowDown />
 
-          <div className="flex w-40 flex-col items-center gap-2.5 rounded-[18px] border border-primary bg-card py-5.5 shadow-[0_0_0_6px_var(--accent-soft),0_20px_60px_rgb(0_0_0/0.5)] lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-1/2">
+          <div className="flex w-40 flex-col items-center gap-2.5 rounded-[18px] border border-primary bg-card py-5.5 shadow-[0_0_0_6px_var(--accent-soft),0_20px_60px_rgb(0_0_0/0.5)] xl:absolute xl:top-1/2 xl:left-1/2 xl:-translate-1/2">
             <OrbitMark className="size-10 text-foreground" />
             <span translate="no" className="text-base font-semibold">
               Orchestrix

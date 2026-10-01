@@ -29,7 +29,7 @@ export function FeatureRow({
       <section
         id={id}
         aria-labelledby={headingId}
-        className="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)] lg:gap-16"
+        className="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)] xl:gap-16"
       >
         <div className="flex max-w-xl flex-col gap-3.5">
           <SectionEyebrow number={number} label={eyebrow} />

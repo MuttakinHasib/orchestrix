@@ -29,14 +29,14 @@ export const INTEGRATION_ACTIONS: readonly IntegrationNode[] = [
 
 /** The desktop diagram's canvas, in px. Every position below uses it. */
 export const HUB_CANVAS = {
-  width: 1100,
+  width: 1060,
   height: 500,
-  centerX: 550,
+  centerX: 530,
   centerY: 250,
 } as const;
 
 /** Horizontal centre of each column of nodes. */
-export const COLUMN_X = { trigger: 150, action: 950 } as const;
+export const COLUMN_X = { trigger: 120, action: 940 } as const;
 
 /** Nodes are a fixed 200px wide, so connectors can meet their inner edge. */
 export const NODE_HALF_WIDTH = 100;

@@ -83,7 +83,7 @@ export function HubConnectors() {
       height={height}
       viewBox={`0 0 ${width} ${height}`}
       fill="none"
-      className="pointer-events-none absolute inset-0 hidden lg:block"
+      className="pointer-events-none absolute inset-0 hidden xl:block"
     >
       <defs>
         {/* Sized to the canvas, not each path, so straight connectors still render. */}

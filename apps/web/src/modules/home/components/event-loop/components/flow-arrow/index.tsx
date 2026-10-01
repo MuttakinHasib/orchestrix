@@ -10,7 +10,7 @@ export function FlowArrow({ index }: FlowArrowProps) {
   return (
     <div
       aria-hidden
-      className="absolute top-1/2 -right-10 hidden w-10 -translate-y-1/2 items-center text-primary lg:flex"
+      className="absolute top-1/2 -right-10 hidden w-10 -translate-y-1/2 items-center text-primary xl:flex"
     >
       <span className="h-px flex-1 bg-linear-to-r from-input to-primary" />
       <span

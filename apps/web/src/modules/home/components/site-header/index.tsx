@@ -18,11 +18,15 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 px-4 pt-4 sm:px-6 lg:px-12">
       <div className="mx-auto flex h-14 max-w-336 items-center gap-8 rounded-[14px] border border-input bg-card/60 pr-2.5 pl-4.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] backdrop-blur-md">
-        <Link href={ROUTES.HOME} aria-label="Orchestrix home">
+        <Link
+          href={ROUTES.HOME}
+          aria-label="Orchestrix home"
+          className="pointer-coarse:-my-2 pointer-coarse:py-2"
+        >
           <BrandMark />
         </Link>
 
-        <nav aria-label="Main" className="hidden md:block">
+        <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex gap-1.5 text-[13.5px]">
             {NAV_LINKS.map(({ label, href }) => (
               <li key={label}>
@@ -34,7 +38,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 md:gap-8">
+        <div className="ml-auto flex items-center gap-2 lg:gap-8">
           <Link
             href={ROUTES.SIGN_IN}
             className={cn(NAV_PILL, "hidden text-[13.5px] sm:inline")}
