@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <style>
+    .ring { stroke: #15161a; }
+    .event { fill: #5a5fe0; }
+    @media (prefers-color-scheme: dark) {
+      .ring { stroke: #ecedf0; }
+      .event { fill: #8b8fff; }
+    }
+  </style>
+  <mask id="gap">
+    <rect width="48" height="48" fill="white" />
+    <circle cx="34.25" cy="13.75" r="7" fill="black" />
+  </mask>
+  <circle class="ring" cx="24" cy="24" r="14.5" stroke-width="5" mask="url(#gap)" />
+  <circle class="event" cx="34.25" cy="13.75" r="5" />
+</svg>

@@ -36,3 +36,9 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Local issue tracker
+.scratch/
+
+# Claude Design exports (local reference only)
+docs/design/
