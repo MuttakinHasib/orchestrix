@@ -13,8 +13,11 @@ require (
 )
 
 require (
+	ariga.io/atlas v0.36.2-0.20250801020723-2aaaf0682dd9 // indirect
+	ariga.io/atlas-provider-bun v0.0.3 // indirect
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/air-verse/air v1.67.4 // indirect
+	github.com/alecthomas/kong v1.12.1 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/bep/godartsass/v2 v2.5.0 // indirect
 	github.com/bep/golibsass v1.2.0 // indirect
@@ -38,11 +41,17 @@ require (
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/tdewolff/parse/v2 v2.8.12 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
+	github.com/uptrace/bun/dialect/mssqldialect v1.2.15 // indirect
+	github.com/uptrace/bun/dialect/mysqldialect v1.2.15 // indirect
+	github.com/uptrace/bun/dialect/oracledialect v1.2.15 // indirect
+	github.com/uptrace/bun/dialect/sqlitedialect v1.2.15 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
+	golang.org/x/mod v0.37.0 // indirect
 	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/tools v0.47.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 

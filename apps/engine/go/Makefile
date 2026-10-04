@@ -4,6 +4,11 @@ PKG   := ./...
 BIN   := ./bin/api
 CMD   := ./cmd/api
 
+ifneq (,$(wildcard .env))
+include .env
+export
+endif
+
 COMPOSE := docker compose -f deployments/docker/compose.yml
 
 .PHONY: help
@@ -51,14 +56,12 @@ cover:
 	go tool cover -html=coverage.out -o coverage.html
 
 ## --- db ---
-.PHONY: migrate migrate-down migrate-status new-migration sqlc
-migrate:
-	goose -dir migrations postgres "$$DATABASE_URL" up
-migrate-down:
-	goose -dir migrations postgres "$$DATABASE_URL" down
-migrate-status:
-	goose -dir migrations postgres "$$DATABASE_URL" status
-new-migration:
-	@read -p "name: " name; goose -dir migrations create $$name sql
-sqlc:
-	sqlc generate
+.PHONY: new-migration migrate migrate-status migrate-lint
+new-migration: ## generate a migration from the Bun models
+	@read -p "name: " name; atlas migrate diff $$name --env local
+migrate: ## apply pending migrations
+	atlas migrate apply --env local
+migrate-status: ## show migration status
+	atlas migrate status --env local
+migrate-lint: ## fail on destructive changes in the latest migration
+	atlas migrate lint --env local --latest 1
