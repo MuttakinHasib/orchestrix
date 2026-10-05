@@ -62,7 +62,7 @@ func run() error {
 
 	httpServer := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.HTTP.Port),
-		Handler:      server.New(server.Options{DB: db, Logger: logger}),
+		Handler:      server.New(server.Options{DB: db, Logger: logger, Docs: !cfg.IsProduction()}),
 		ReadTimeout:  cfg.HTTP.ReadTimeout,
 		WriteTimeout: cfg.HTTP.WriteTimeout,
 	}

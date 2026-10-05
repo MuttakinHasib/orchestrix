@@ -1,0 +1,308 @@
+openapi: 3.1.0
+info:
+  title: Orchestrix Engine API
+  version: 0.1.0
+  description: >
+    Engineering work management and workflow automation API.
+
+    This document is the implementation-agnostic contract for every
+    Orchestrix engine backend (Go, Rust, Python) — see
+    docs/project_overview.md §41. The Go engine embeds a synced copy of
+    this file (make swagger-sync; make swagger-check guards drift).
+
+    Authentication is not part of the contract yet; multi-tenant scoping
+    arrives with the auth module.
+servers:
+  - url: http://localhost:8080
+    description: Local development
+tags:
+  - name: workspaces
+    description: Tenant roots — everything a team creates hangs off a workspace.
+  - name: system
+    description: Liveness and readiness probes.
+paths:
+  /healthz:
+    get:
+      tags: [system]
+      summary: Liveness probe
+      description: The process is up; no dependencies are checked.
+      operationId: getHealthz
+      responses:
+        '200':
+          description: The process is alive.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /readyz:
+    get:
+      tags: [system]
+      summary: Readiness probe
+      description: Checks that dependencies (currently PostgreSQL) are reachable.
+      operationId: getReadyz
+      responses:
+        '200':
+          description: All dependencies are reachable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '503':
+          description: At least one dependency is unreachable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/workspaces:
+    get:
+      tags: [workspaces]
+      summary: List workspaces
+      description: >
+        Newest first, cursor-paginated. The window is stable under
+        concurrent writes; follow next_cursor until it is empty.
+      operationId: listWorkspaces
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/cursor'
+        - name: search
+          in: query
+          description: Case-insensitive substring match on name and slug.
+          schema:
+            type: string
+            maxLength: 500
+      responses:
+        '200':
+          description: One page of workspaces.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags: [workspaces]
+      summary: Create a workspace
+      description: >
+        Slug is derived from the name when omitted ("Acme Inc!" becomes
+        "acme-inc"). Slugs are globally unique.
+      operationId: createWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspace'
+      responses:
+        '201':
+          description: The workspace was created.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL of the created workspace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: The slug already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/workspaces/{workspaceID}:
+    parameters:
+      - $ref: '#/components/parameters/workspaceID'
+    get:
+      tags: [workspaces]
+      summary: Get a workspace
+      operationId: getWorkspace
+      responses:
+        '200':
+          description: The workspace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      tags: [workspaces]
+      summary: Partially update a workspace
+      description: Only the fields present in the body change.
+      operationId: updateWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspace'
+      responses:
+        '200':
+          description: The updated workspace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags: [workspaces]
+      summary: Delete a workspace
+      operationId: deleteWorkspace
+      responses:
+        '204':
+          description: The workspace was deleted.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    workspaceID:
+      name: workspaceID
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    limit:
+      name: limit
+      in: query
+      description: Page size; defaults to 50 and is capped at 100.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    cursor:
+      name: cursor
+      in: query
+      description: Opaque continuation token from the previous page's next_cursor.
+      schema:
+        type: string
+  schemas:
+    Status:
+      type: object
+      properties:
+        status:
+          type: string
+    Workspace:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUIDv7, generated by the server.
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 63
+          pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [id, name, slug, description, created_at, updated_at]
+    CreateWorkspace:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 63
+          pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+        description:
+          type: string
+          maxLength: 500
+      required: [name]
+    UpdateWorkspace:
+      type: object
+      description: Only the fields present change.
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+    WorkspacePage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workspace'
+        next_cursor:
+          type: string
+          description: Empty when there are no more rows.
+      required: [items, next_cursor]
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: >
+                One of invalid_json, validation_failed, invalid_limit,
+                invalid_cursor, invalid_id, not_found, conflict,
+                method_not_allowed, unavailable, internal_error.
+            message:
+              type: string
+            fields:
+              type: array
+              description: Present on validation_failed.
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+          required: [code, message]
+      required: [error]
+  responses:
+    BadRequest:
+      description: The request is malformed or fails validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Unexpected failure; the response never leaks internals.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

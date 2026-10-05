@@ -25,6 +25,10 @@ type Options struct {
 	// Ready overrides the readiness probe; it defaults to a DB ping.
 	// Tests inject a stub to stay hermetic.
 	Ready func(ctx context.Context) error
+
+	// Docs serves the OpenAPI contract (/openapi.yaml) and Swagger UI
+	// (/swagger). Only non-production builds should enable it.
+	Docs bool
 }
 
 type server struct {
@@ -56,6 +60,10 @@ func New(opts Options) http.Handler {
 	r.MethodNotAllowed(func(w http.ResponseWriter, _ *http.Request) {
 		httpx.WriteError(w, httpx.New(http.StatusMethodNotAllowed, "method_not_allowed", "method not allowed"))
 	})
+
+	if opts.Docs {
+		s.mountDocs(r)
+	}
 
 	r.Route("/api/v1", func(r chi.Router) {
 		// One error handler instance shared by every module.

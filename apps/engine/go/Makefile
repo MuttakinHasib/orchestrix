@@ -55,6 +55,13 @@ cover:
 	go test -race -covermode=atomic -coverprofile=coverage.out $(PKG)
 	go tool cover -html=coverage.out -o coverage.html
 
+## --- api contract ---
+.PHONY: swagger-sync swagger-check
+swagger-sync: ## copy the contract into the embedded spec
+	cp ../../../packages/api-contract/openapi.yaml api/openapi.yaml
+swagger-check: ## fail when the embedded spec drifts from the contract
+	@diff ../../../packages/api-contract/openapi.yaml api/openapi.yaml
+
 ## --- db ---
 .PHONY: new-migration migrate migrate-status migrate-lint
 new-migration: ## generate a migration from the Bun models
