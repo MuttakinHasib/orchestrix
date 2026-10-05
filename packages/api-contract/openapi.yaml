@@ -1,0 +1,337 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  description: |-
+    Engineering work management and workflow automation API.
+    .
+    The engine is one implementation of the shared API contract
+    (docs/project_overview.md §41); this document is generated
+    from the Go handlers (make swagger) and synced to
+    packages/api-contract/openapi.yaml.
+  title: Orchestrix Engine API
+  version: 0.1.0
+paths:
+  /api/v1/workspaces:
+    get:
+      description: |-
+        The window is stable under concurrent writes; follow
+        next_cursor until it is empty. search matches name and
+        slug case-insensitively.
+      parameters:
+        - description: Page size; defaults to 50, capped at 100
+          in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - description: Opaque continuation token from the previous page
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: Case-insensitive substring match on name and slug
+          in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/internal_modules_workspace.WorkspacePage"
+        "400":
+          description: invalid_limit or invalid_cursor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+      summary: List workspaces
+      tags:
+        - workspaces
+    post:
+      description: |-
+        Slug is derived from the name when omitted ("Acme Inc!"
+        becomes "acme-inc"). Slugs are globally unique.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/internal_modules_workspace.CreateRequest"
+        description: Workspace to create
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/internal_modules_workspace.Workspace"
+        "400":
+          description: invalid_json or validation_failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "409":
+          description: conflict — slug already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+      summary: Create a workspace
+      tags:
+        - workspaces
+  "/api/v1/workspaces/{workspace_id}":
+    delete:
+      parameters:
+        - description: Workspace id (UUID)
+          in: path
+          name: workspace_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: The workspace was deleted
+        "400":
+          description: invalid_id
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "404":
+          description: not_found
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "500":
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+      summary: Delete a workspace
+      tags:
+        - workspaces
+    get:
+      parameters:
+        - description: Workspace id (UUID)
+          in: path
+          name: workspace_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/internal_modules_workspace.Workspace"
+        "400":
+          description: invalid_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "404":
+          description: not_found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+      summary: Get a workspace
+      tags:
+        - workspaces
+    patch:
+      description: Only the fields present in the body change.
+      parameters:
+        - description: Workspace id (UUID)
+          in: path
+          name: workspace_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/internal_modules_workspace.UpdateRequest"
+        description: Fields to update
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/internal_modules_workspace.Workspace"
+        "400":
+          description: invalid_json, validation_failed, or invalid_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "404":
+          description: not_found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+      summary: Partially update a workspace
+      tags:
+        - workspaces
+  /healthz:
+    get:
+      description: The process is up; no dependencies are checked.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+      summary: Liveness probe
+      tags:
+        - system
+  /readyz:
+    get:
+      description: Checks that dependencies (currently PostgreSQL) are reachable.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+        "503":
+          description: unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+                  internal_httpx.Error"
+      summary: Readiness probe
+      tags:
+        - system
+servers:
+  - url: /
+components:
+  schemas:
+    github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error:
+      properties:
+        code:
+          type: string
+        fields:
+          items:
+            $ref: "#/components/schemas/github_com_MuttakinHasib_orchestrix_apps_engine_go_\
+              internal_httpx.FieldError"
+          type: array
+        message:
+          type: string
+      type: object
+    github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.FieldError:
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+      type: object
+    internal_modules_workspace.CreateRequest:
+      properties:
+        description:
+          example: The Acme engineering org
+          maxLength: 500
+          type: string
+        name:
+          example: Acme Inc
+          maxLength: 100
+          type: string
+        slug:
+          example: acme-inc
+          maxLength: 63
+          type: string
+      required:
+        - name
+      type: object
+    internal_modules_workspace.UpdateRequest:
+      properties:
+        description:
+          example: Updated description
+          maxLength: 500
+          type: string
+        name:
+          example: Acme Inc (renamed)
+          maxLength: 100
+          type: string
+      type: object
+    internal_modules_workspace.Workspace:
+      properties:
+        created_at:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        updated_at:
+          type: string
+      type: object
+    internal_modules_workspace.WorkspacePage:
+      properties:
+        items:
+          items:
+            $ref: "#/components/schemas/internal_modules_workspace.Workspace"
+          type: array
+        next_cursor:
+          type: string
+      type: object
