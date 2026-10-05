@@ -11,6 +11,8 @@ import (
 	"syscall"
 
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/config"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/database"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/server"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/telemetry"
 )
 
@@ -22,6 +24,15 @@ func main() {
 	}
 }
 
+// @title Orchestrix Engine API
+// @version 0.1.0
+// @description Engineering work management and workflow automation API.
+// @description .
+// @description The engine is one implementation of the shared API contract
+// @description (docs/project_overview.md §41); this document is generated
+// @description from the Go handlers (make swagger) and synced to
+// @description packages/api-contract/openapi.yaml.
+// @BasePath /
 func run() error {
 	cfg, err := config.Load()
 
@@ -39,18 +50,28 @@ func run() error {
 	logger.Info("starting", "env", cfg.App.Env, "port", cfg.HTTP.Port)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+
 	defer stop()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"status": "ok"}`))
+	pool, err := database.NewPool(ctx, database.PoolOptions{
+		URL:      cfg.Database.URL.Reveal(),
+		MaxConns: cfg.Database.MaxConns,
+		MinConns: cfg.Database.MinConns,
 	})
 
-	server := &http.Server{
+	if err != nil {
+		return fmt.Errorf("connect database: %w", err)
+	}
+
+	defer pool.Close()
+
+	db := database.NewBun(pool, cfg.Log.Level == "debug")
+
+	defer func() { _ = db.Close() }()
+
+	httpServer := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.HTTP.Port),
-		Handler:      mux,
+		Handler:      server.New(server.Options{DB: db, Logger: logger, Docs: !cfg.IsProduction()}),
 		ReadTimeout:  cfg.HTTP.ReadTimeout,
 		WriteTimeout: cfg.HTTP.WriteTimeout,
 	}
@@ -58,20 +79,20 @@ func run() error {
 	errCh := make(chan error, 1)
 
 	go func() {
-		logger.Info("http listing", "addr", server.Addr)
+		logger.Info("http listening", "addr", httpServer.Addr)
 
-		if err := server.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
+		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errCh <- err
+
 			return
 		}
+
 		errCh <- nil
 	}()
 
 	select {
 	case err := <-errCh:
-		if err != nil {
-			return fmt.Errorf("http server: %w", err)
-		}
+		return err
 	case <-ctx.Done():
 		logger.Info("shutdown signal received")
 	}
@@ -80,7 +101,7 @@ func run() error {
 
 	defer cancel()
 
-	if err := server.Shutdown(shutdownCtx); err != nil {
+	if err := httpServer.Shutdown(shutdownCtx); err != nil {
 		return fmt.Errorf("http shutdown: %w", err)
 	}
 
