@@ -1,7 +1,8 @@
-// Package api embeds the engine's OpenAPI contract. The spec is synced
-// from packages/api-contract/openapi.yaml (the single source of truth —
-// make swagger-sync copies it here; make swagger-check fails when the
-// copy drifts).
+// Package api embeds the engine's OpenAPI contract. The spec is
+// GENERATED from the handler annotations (make swagger) — never edit
+// api/swagger.yaml by hand; change the annotations and regenerate. The
+// result is synced to packages/api-contract/openapi.yaml, the shared
+// contract every engine backend implements.
 package api
 
 import (

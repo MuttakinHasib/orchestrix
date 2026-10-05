@@ -24,6 +24,15 @@ func main() {
 	}
 }
 
+// @title Orchestrix Engine API
+// @version 0.1.0
+// @description Engineering work management and workflow automation API.
+// @description .
+// @description The engine is one implementation of the shared API contract
+// @description (docs/project_overview.md §41); this document is generated
+// @description from the Go handlers (make swagger) and synced to
+// @description packages/api-contract/openapi.yaml.
+// @BasePath /
 func run() error {
 	cfg, err := config.Load()
 

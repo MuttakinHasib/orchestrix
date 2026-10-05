@@ -40,14 +40,28 @@ func (h *Handler) Routes() chi.Router {
 	return r
 }
 
-type createRequest struct {
-	Name        string `json:"name"        validate:"required,max=100"`
-	Slug        string `json:"slug"        validate:"omitempty,max=63,slug"`
-	Description string `json:"description" validate:"max=500"`
+type CreateRequest struct {
+	Name        string `json:"name"        validate:"required,max=100" example:"Acme Inc"`
+	Slug        string `json:"slug"        validate:"omitempty,max=63,slug" example:"acme-inc"`
+	Description string `json:"description" validate:"max=500" example:"The Acme engineering org"`
 }
 
+// create creates a workspace.
+//
+//	@Summary     Create a workspace
+//	@Description Slug is derived from the name when omitted ("Acme Inc!"
+//	@Description becomes "acme-inc"). Slugs are globally unique.
+//	@Tags        workspaces
+//	@Accept      json
+//	@Produce     json
+//	@Param       request body CreateRequest true "Workspace to create"
+//	@Success     201 {object} Workspace
+//	@Failure     400 {object} httpx.Error "invalid_json or validation_failed"
+//	@Failure     409 {object} httpx.Error "conflict — slug already exists"
+//	@Failure     500 {object} httpx.Error
+//	@Router      /api/v1/workspaces [post]
 func (h *Handler) create(w http.ResponseWriter, r *http.Request) error {
-	var req createRequest
+	var req CreateRequest
 
 	if err := httpx.Decode(r, &req); err != nil {
 		return err
@@ -74,6 +88,28 @@ func (h *Handler) create(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// WorkspacePage is the workspace list envelope — a concrete specialization
+// of pagination.Page so generated OpenAPI schema names stay clean.
+type WorkspacePage struct {
+	Items      []Workspace `json:"items"`
+	NextCursor string      `json:"next_cursor"`
+}
+
+// list returns workspaces newest first, cursor-paginated.
+//
+//	@Summary     List workspaces
+//	@Description The window is stable under concurrent writes; follow
+//	@Description next_cursor until it is empty. search matches name and
+//	@Description slug case-insensitively.
+//	@Tags        workspaces
+//	@Produce     json
+//	@Param       limit  query int    false "Page size; defaults to 50, capped at 100" minimum(1) maximum(100)
+//	@Param       cursor query string false "Opaque continuation token from the previous page"
+//	@Param       search query string false "Case-insensitive substring match on name and slug"
+//	@Success     200 {object} WorkspacePage
+//	@Failure     400 {object} httpx.Error "invalid_limit or invalid_cursor"
+//	@Failure     500 {object} httpx.Error
+//	@Router      /api/v1/workspaces [get]
 func (h *Handler) list(w http.ResponseWriter, r *http.Request) error {
 	q := r.URL.Query()
 
@@ -98,11 +134,22 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	httpx.JSON(w, http.StatusOK, page)
+	httpx.JSON(w, http.StatusOK, WorkspacePage{Items: page.Items, NextCursor: page.NextCursor})
 
 	return nil
 }
 
+// get returns one workspace by id.
+//
+//	@Summary Get a workspace
+//	@Tags    workspaces
+//	@Produce json
+//	@Param   workspaceID path string true "Workspace id (UUID)"
+//	@Success 200 {object} Workspace
+//	@Failure 400 {object} httpx.Error "invalid_id"
+//	@Failure 404 {object} httpx.Error "not_found"
+//	@Failure 500 {object} httpx.Error
+//	@Router  /api/v1/workspaces/{workspaceID} [get]
 func (h *Handler) get(w http.ResponseWriter, r *http.Request) error {
 	id, err := workspaceID(r)
 
@@ -121,11 +168,25 @@ func (h *Handler) get(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-type updateRequest struct {
-	Name        *string `json:"name"        validate:"omitempty,max=100"`
-	Description *string `json:"description" validate:"omitempty,max=500"`
+type UpdateRequest struct {
+	Name        *string `json:"name"        validate:"omitempty,max=100" example:"Acme Inc (renamed)"`
+	Description *string `json:"description" validate:"omitempty,max=500" example:"Updated description"`
 }
 
+// update partially updates a workspace.
+//
+//	@Summary     Partially update a workspace
+//	@Description Only the fields present in the body change.
+//	@Tags        workspaces
+//	@Accept      json
+//	@Produce     json
+//	@Param       workspaceID path string true "Workspace id (UUID)"
+//	@Param       request body UpdateRequest true "Fields to update"
+//	@Success     200 {object} Workspace
+//	@Failure     400 {object} httpx.Error "invalid_json, validation_failed, or invalid_id"
+//	@Failure     404 {object} httpx.Error "not_found"
+//	@Failure     500 {object} httpx.Error
+//	@Router      /api/v1/workspaces/{workspaceID} [patch]
 func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
 	id, err := workspaceID(r)
 
@@ -133,7 +194,7 @@ func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	var req updateRequest
+	var req UpdateRequest
 
 	if err := httpx.Decode(r, &req); err != nil {
 		return err
@@ -157,6 +218,16 @@ func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// remove deletes a workspace.
+//
+//	@Summary Delete a workspace
+//	@Tags    workspaces
+//	@Param   workspaceID path string true "Workspace id (UUID)"
+//	@Success 204 "The workspace was deleted"
+//	@Failure 400 {object} httpx.Error "invalid_id"
+//	@Failure 404 {object} httpx.Error "not_found"
+//	@Failure 500 {object} httpx.Error
+//	@Router  /api/v1/workspaces/{workspaceID} [delete]
 func (h *Handler) remove(w http.ResponseWriter, r *http.Request) error {
 	id, err := workspaceID(r)
 

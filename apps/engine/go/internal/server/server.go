@@ -78,12 +78,27 @@ func New(opts Options) http.Handler {
 }
 
 // health is the liveness probe: the process is up, no dependencies checked.
+//
+//	@Summary Liveness probe
+//	@Description The process is up; no dependencies are checked.
+//	@Tags    system
+//	@Produce json
+//	@Success 200 {object} map[string]string
+//	@Router  /healthz [get]
 func health(w http.ResponseWriter, _ *http.Request) {
 	httpx.JSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
 // readyz is the readiness probe: dependencies reachable. The injected
 // Ready overrides the default DB ping (used by tests).
+//
+//	@Summary  Readiness probe
+//	@Description Checks that dependencies (currently PostgreSQL) are reachable.
+//	@Tags     system
+//	@Produce  json
+//	@Success  200 {object} map[string]string
+//	@Failure  503 {object} httpx.Error "unavailable"
+//	@Router   /readyz [get]
 func (s *server) readyz(w http.ResponseWriter, r *http.Request) error {
 	ready := s.ready
 
