@@ -26,16 +26,16 @@ func NewHandler(svc *Service, onError httpx.ErrorHandler) *Handler {
 	return &Handler{svc: svc, onError: onError}
 }
 
-// Routes mounts the workspace endpoints: POST /, GET /, GET /{workspaceID},
-// PATCH /{workspaceID}, DELETE /{workspaceID}.
+// Routes mounts the workspace endpoints: POST /, GET /, GET /{workspace_id},
+// PATCH /{workspace_id}, DELETE /{workspace_id}.
 func (h *Handler) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.Post("/", httpx.Handle(h.onError, h.create))
 	r.Get("/", httpx.Handle(h.onError, h.list))
-	r.Get("/{workspaceID}", httpx.Handle(h.onError, h.get))
-	r.Patch("/{workspaceID}", httpx.Handle(h.onError, h.update))
-	r.Delete("/{workspaceID}", httpx.Handle(h.onError, h.remove))
+	r.Get("/{workspace_id}", httpx.Handle(h.onError, h.get))
+	r.Patch("/{workspace_id}", httpx.Handle(h.onError, h.update))
+	r.Delete("/{workspace_id}", httpx.Handle(h.onError, h.remove))
 
 	return r
 }
@@ -144,12 +144,12 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) error {
 //	@Summary Get a workspace
 //	@Tags    workspaces
 //	@Produce json
-//	@Param   workspaceID path string true "Workspace id (UUID)"
+//	@Param   workspace_id path string true "Workspace id (UUID)"
 //	@Success 200 {object} Workspace
 //	@Failure 400 {object} httpx.Error "invalid_id"
 //	@Failure 404 {object} httpx.Error "not_found"
 //	@Failure 500 {object} httpx.Error
-//	@Router  /api/v1/workspaces/{workspaceID} [get]
+//	@Router  /api/v1/workspaces/{workspace_id} [get]
 func (h *Handler) get(w http.ResponseWriter, r *http.Request) error {
 	id, err := workspaceID(r)
 
@@ -180,13 +180,13 @@ type UpdateRequest struct {
 //	@Tags        workspaces
 //	@Accept      json
 //	@Produce     json
-//	@Param       workspaceID path string true "Workspace id (UUID)"
+//	@Param       workspace_id path string true "Workspace id (UUID)"
 //	@Param       request body UpdateRequest true "Fields to update"
 //	@Success     200 {object} Workspace
 //	@Failure     400 {object} httpx.Error "invalid_json, validation_failed, or invalid_id"
 //	@Failure     404 {object} httpx.Error "not_found"
 //	@Failure     500 {object} httpx.Error
-//	@Router      /api/v1/workspaces/{workspaceID} [patch]
+//	@Router      /api/v1/workspaces/{workspace_id} [patch]
 func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
 	id, err := workspaceID(r)
 
@@ -222,12 +222,12 @@ func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
 //
 //	@Summary Delete a workspace
 //	@Tags    workspaces
-//	@Param   workspaceID path string true "Workspace id (UUID)"
+//	@Param   workspace_id path string true "Workspace id (UUID)"
 //	@Success 204 "The workspace was deleted"
 //	@Failure 400 {object} httpx.Error "invalid_id"
 //	@Failure 404 {object} httpx.Error "not_found"
 //	@Failure 500 {object} httpx.Error
-//	@Router  /api/v1/workspaces/{workspaceID} [delete]
+//	@Router  /api/v1/workspaces/{workspace_id} [delete]
 func (h *Handler) remove(w http.ResponseWriter, r *http.Request) error {
 	id, err := workspaceID(r)
 
@@ -246,7 +246,7 @@ func (h *Handler) remove(w http.ResponseWriter, r *http.Request) error {
 
 // workspaceID parses the path parameter; a malformed id is a client error.
 func workspaceID(r *http.Request) (uuid.UUID, error) {
-	id, err := uuid.Parse(chi.URLParam(r, "workspaceID"))
+	id, err := uuid.Parse(chi.URLParam(r, "workspace_id"))
 
 	if err != nil {
 		return uuid.Nil, httpx.New(http.StatusBadRequest, "invalid_id", "workspace id must be a UUID")

@@ -156,12 +156,12 @@ paths:
       summary: Create a workspace
       tags:
       - workspaces
-  /api/v1/workspaces/{workspaceID}:
+  /api/v1/workspaces/{workspace_id}:
     delete:
       parameters:
       - description: Workspace id (UUID)
         in: path
-        name: workspaceID
+        name: workspace_id
         required: true
         type: string
       responses:
@@ -186,7 +186,7 @@ paths:
       parameters:
       - description: Workspace id (UUID)
         in: path
-        name: workspaceID
+        name: workspace_id
         required: true
         type: string
       produces:
@@ -218,7 +218,7 @@ paths:
       parameters:
       - description: Workspace id (UUID)
         in: path
-        name: workspaceID
+        name: workspace_id
         required: true
         type: string
       - description: Fields to update
