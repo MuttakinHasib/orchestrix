@@ -4,6 +4,11 @@ PKG   := ./...
 BIN   := ./bin/api
 CMD   := ./cmd/api
 
+ifneq (,$(wildcard .env))
+include .env
+export
+endif
+
 COMPOSE := docker compose -f deployments/docker/compose.yml
 
 .PHONY: help
@@ -14,9 +19,8 @@ help:
 .PHONY: tools
 tools: ## install dev tools
 	go install github.com/air-verse/air@latest
-	go install github.com/pressly/goose/v3/cmd/goose@latest
-	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+	@echo "atlas: brew install ariga/tap/atlas"
 
 ## --- docker deps ---
 .PHONY: up down logs
@@ -30,7 +34,7 @@ logs:
 ## --- app ---
 .PHONY: dev build run
 dev: ## hot-reload api
-	air
+	go tool air
 build: ## static binary
 	CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(BIN) $(CMD)
 run: build
@@ -52,14 +56,12 @@ cover:
 	go tool cover -html=coverage.out -o coverage.html
 
 ## --- db ---
-.PHONY: migrate migrate-down migrate-status new-migration sqlc
-migrate:
-	goose -dir migrations postgres "$$DATABASE_URL" up
-migrate-down:
-	goose -dir migrations postgres "$$DATABASE_URL" down
-migrate-status:
-	goose -dir migrations postgres "$$DATABASE_URL" status
-new-migration:
-	@read -p "name: " name; goose -dir migrations create $$name sql
-sqlc:
-	sqlc generate
+.PHONY: new-migration migrate migrate-status migrate-lint
+new-migration: ## generate a migration from the Bun models
+	@read -p "name: " name; atlas migrate diff $$name --env local
+migrate: ## apply pending migrations
+	atlas migrate apply --env local
+migrate-status: ## show migration status
+	atlas migrate status --env local
+migrate-lint: ## fail on destructive changes in the latest migration
+	atlas migrate lint --env local --latest 1

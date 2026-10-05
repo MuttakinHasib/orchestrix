@@ -7,10 +7,11 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/MuttakinHasib/orchestrix/apps/engine/internal/config"
-	"github.com/MuttakinHasib/orchestrix/apps/engine/internal/infrastructure/observability"
-	"github.com/MuttakinHasib/orchestrix/apps/engine/internal/platform/shutdown"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/config"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/telemetry"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func run() error {
 		return fmt.Errorf("load config: %w", err)
 	}
 
-	logger := observability.NewLogger(observability.LoggerOptions{
+	logger := telemetry.NewLogger(telemetry.LoggerOptions{
 		Level:  cfg.Log.Level,
 		Format: cfg.Log.Format,
 	})
@@ -37,7 +38,7 @@ func run() error {
 
 	logger.Info("starting", "env", cfg.App.Env, "port", cfg.HTTP.Port)
 
-	ctx, stop := shutdown.Context(context.Background())
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	mux := http.NewServeMux()
