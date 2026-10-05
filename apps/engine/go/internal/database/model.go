@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/pagination"
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
@@ -38,4 +39,12 @@ func (b *BaseEntity) BeforeAppendModel(_ context.Context, query bun.Query) error
 		b.UpdatedAt = time.Now().UTC()
 	}
 	return nil
+}
+
+// PaginationKey returns the row's position in the standard listing order.
+// A value receiver so both entity values and pointers satisfy
+// pagination.Keyer (BeforeAppendModel stays a pointer receiver — it
+// mutates the row).
+func (b BaseEntity) PaginationKey() pagination.Key {
+	return pagination.Key{CreatedAt: b.CreatedAt, ID: b.ID}
 }
