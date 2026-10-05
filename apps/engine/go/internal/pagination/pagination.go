@@ -28,17 +28,19 @@ type Keyer interface {
 // Page carries one page of results plus the token to fetch the next page.
 // An empty NextCursor means there are no more rows.
 type Page[T any] struct {
-	Items      []T
-	NextCursor string
+	Items      []T    `json:"items"`
+	NextCursor string `json:"next_cursor"`
 }
 
-// Fetch pins the standard ordering and keyset window onto q, scans into
-// items, and builds the page. items must already be attached to q via
-// Model(&items) and be preallocated with capacity limit+1. A non-empty
-// cursor continues from where the previous page stopped; an undecodable
-// cursor yields [ErrInvalidCursor].
-func Fetch[T Keyer](ctx context.Context, query *bun.SelectQuery, items []T, limit int, cursor string) (*Page[T], error) {
-	query = query.Order("created_at DESC").Order("id DESC").Limit(limit + 1)
+// Fetch pins the standard ordering and keyset window onto query, scans
+// the results, and builds the page. The model slice is created here —
+// callers must NOT attach Model to the query. A non-empty cursor continues
+// from where the previous page stopped; an undecodable cursor yields
+// [ErrInvalidCursor]. Instantiate explicitly: Fetch[Workspace](ctx, q, ...).
+func Fetch[T Keyer](ctx context.Context, query *bun.SelectQuery, limit int, cursor string) (*Page[T], error) {
+	items := make([]T, 0, limit+1)
+
+	query = query.Model(&items).Order("created_at DESC").Order("id DESC").Limit(limit + 1)
 
 	if cursor != "" {
 		key, err := decodeCursor(cursor)
