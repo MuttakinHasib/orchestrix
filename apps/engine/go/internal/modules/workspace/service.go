@@ -8,6 +8,7 @@ import (
 	"github.com/gosimple/slug"
 
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/pagination"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/validate"
 )
 
 // Store is the persistence contract the service depends on — satisfied by
@@ -47,7 +48,7 @@ type UpdateInput struct {
 // Create normalizes the input, derives the slug when absent, and persists
 // the workspace.
 func (s *Service) Create(ctx context.Context, in CreateInput) (*Workspace, error) {
-	name, err := normalizeName(in.Name)
+	name, err := validate.NormalizeName(in.Name)
 
 	if err != nil {
 		return nil, err
@@ -85,7 +86,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, in UpdateInput) (*Wo
 	}
 
 	if in.Name != nil {
-		name, err := normalizeName(*in.Name)
+		name, err := validate.NormalizeName(*in.Name)
 
 		if err != nil {
 			return nil, err
@@ -108,19 +109,6 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, in UpdateInput) (*Wo
 // Delete removes the workspace with id.
 func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	return s.store.Delete(ctx, id)
-}
-
-// normalizeName trims surrounding whitespace and requires a non-empty
-// result — a name of only whitespace passes shape validation but carries
-// no value.
-func normalizeName(raw string) (string, error) {
-	name := strings.TrimSpace(raw)
-
-	if name == "" {
-		return "", &ValidationError{Field: "name", Message: "is required"}
-	}
-
-	return name, nil
 }
 
 // deriveSlug returns the explicit slug when provided, otherwise derives

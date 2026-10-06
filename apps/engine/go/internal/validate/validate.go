@@ -86,3 +86,30 @@ func messageFor(fe validator.FieldError) string {
 		return "is invalid"
 	}
 }
+
+// ValidationError reports a single semantically invalid input field.
+// Shape rules are enforced upstream on request DTOs; services reject only
+// inputs that are still invalid after normalization (e.g. whitespace-only
+// names). The global error handler maps it to a 400.
+type ValidationError struct {
+	Field   string
+	Message string
+}
+
+// Error returns "field: message".
+func (e *ValidationError) Error() string {
+	return e.Field + ": " + e.Message
+}
+
+// NormalizeName trims surrounding whitespace and requires a non-empty
+// result — a name of only whitespace passes shape validation but carries
+// no value.
+func NormalizeName(raw string) (string, error) {
+	name := strings.TrimSpace(raw)
+
+	if name == "" {
+		return "", &ValidationError{Field: "name", Message: "is required"}
+	}
+
+	return name, nil
+}

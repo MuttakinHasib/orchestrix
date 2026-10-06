@@ -9,6 +9,7 @@ import (
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/httpx"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/workspace"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/pagination"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/validate"
 )
 
 // fail is the global error handler: every error returned by any handler in
@@ -36,7 +37,7 @@ func (s *server) fail(w http.ResponseWriter, r *http.Request, err error) {
 func (s *server) mapError(err error) *httpx.Error {
 	var (
 		herr *httpx.Error
-		verr *workspace.ValidationError
+		verr *validate.ValidationError
 	)
 
 	switch {
