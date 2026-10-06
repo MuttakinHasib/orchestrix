@@ -7,6 +7,7 @@ import (
 
 	"ariga.io/atlas-provider-bun/bunschema"
 	_ "ariga.io/atlas/sdk/recordriver"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/teams"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/workspace"
 )
 
@@ -21,6 +22,7 @@ func main() {
 func run() error {
 	stmts, err := bunschema.New(bunschema.DialectPostgres).Load(
 		&workspace.Workspace{},
+		&teams.Team{},
 	//! Adding a model to the schema = adding one line here.
 	// Many-to-many join tables need bunschema.WithJoinTable(...).
 	)
