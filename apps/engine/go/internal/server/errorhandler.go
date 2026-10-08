@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/httpx"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/teams"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/workspace"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/pagination"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/validate"
@@ -57,6 +58,9 @@ func (s *server) mapError(err error) *httpx.Error {
 
 	case errors.Is(err, workspace.ErrWorkspaceSlugExists):
 		return httpx.New(http.StatusConflict, "conflict", "workspace slug already exists")
+
+	case errors.Is(err, teams.ErrTeamNotFound):
+		return httpx.New(http.StatusNotFound, "not_found", "team not found")
 
 	case errors.Is(err, pagination.ErrInvalidCursor):
 		return httpx.New(http.StatusBadRequest, "invalid_cursor", "cursor is not valid")

@@ -53,14 +53,6 @@ func (r *Repository) Get(ctx context.Context, id uuid.UUID) (*Workspace, error) 
 	return ws, nil
 }
 
-// QueryParams carries the workspace-specific list controls. Embedding
-// pagination.Params gives limit + cursor; Search matches name and slug.
-type QueryParams struct {
-	pagination.Params
-
-	Search string
-}
-
 // List returns workspaces newest first, filtered by Search when set,
 // continuing from the opaque cursor when provided.
 func (r *Repository) List(ctx context.Context, qp QueryParams) (*pagination.Page[Workspace], error) {

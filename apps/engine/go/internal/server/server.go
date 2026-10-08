@@ -14,6 +14,7 @@ import (
 	"github.com/uptrace/bun"
 
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/httpx"
+	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/teams"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/modules/workspace"
 )
 
@@ -32,14 +33,20 @@ type Options struct {
 }
 
 type server struct {
-	db    *bun.DB
-	log   *slog.Logger
-	ready func(ctx context.Context) error
+	db         *bun.DB
+	log        *slog.Logger
+	ready      func(ctx context.Context) error
+	workspaces *workspace.Service
 }
 
 // New builds the fully wired HTTP handler.
 func New(opts Options) http.Handler {
-	s := &server{db: opts.DB, log: opts.Logger, ready: opts.Ready}
+	s := &server{
+		db:         opts.DB,
+		log:        opts.Logger,
+		ready:      opts.Ready,
+		workspaces: workspace.NewService(workspace.NewRepository(opts.DB)),
+	}
 
 	r := chi.NewRouter()
 
@@ -69,9 +76,15 @@ func New(opts Options) http.Handler {
 		// One error handler instance shared by every module.
 		onError := httpx.ErrorHandler(s.fail)
 
-		store := workspace.NewRepository(s.db)
+		r.Mount("/workspaces", workspace.NewHandler(s.workspaces, onError).Routes())
 
-		r.Mount("/workspaces", workspace.NewHandler(workspace.NewService(store), onError).Routes())
+		r.Route("/workspaces/{workspace_id}", func(r chi.Router) {
+			workspace.NewHandler(s.workspaces, onError).MountItem(r)
+
+			// Tenant-scoped subtrees mount behind the workspace guard.
+			r.With(s.requireWorkspace).Mount("/teams",
+				teams.NewHandler(teams.NewService(teams.NewRepository(s.db)), onError).Routes())
+		})
 	})
 
 	return r

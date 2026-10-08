@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/httpx"
 	"github.com/MuttakinHasib/orchestrix/apps/engine/go/internal/pagination"
@@ -26,24 +25,23 @@ func NewHandler(svc *Service, onError httpx.ErrorHandler) *Handler {
 	return &Handler{svc: svc, onError: onError}
 }
 
-// Routes mounts the workspace endpoints: POST /, GET /, GET /{workspace_id},
-// PATCH /{workspace_id}, DELETE /{workspace_id}.
+// Routes mounts the workspace collection endpoints: POST /, GET /.
 func (h *Handler) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.Post("/", httpx.Handle(h.onError, h.create))
 	r.Get("/", httpx.Handle(h.onError, h.list))
-	r.Get("/{workspace_id}", httpx.Handle(h.onError, h.get))
-	r.Patch("/{workspace_id}", httpx.Handle(h.onError, h.update))
-	r.Delete("/{workspace_id}", httpx.Handle(h.onError, h.remove))
 
 	return r
 }
 
-type CreateRequest struct {
-	Name        string `json:"name"        validate:"required,max=100" example:"Acme Inc"`
-	Slug        string `json:"slug"        validate:"omitempty,max=63,slug" example:"acme-inc"`
-	Description string `json:"description" validate:"max=500" example:"The Acme engineering org"`
+// MountItem mounts the workspace-item endpoints on a router whose path
+// ends at the {workspace_id} segment: GET /, PATCH /, DELETE /. Nested
+// module subtrees (e.g. /teams) mount alongside it in the server.
+func (h *Handler) MountItem(r chi.Router) {
+	r.Get("/", httpx.Handle(h.onError, h.get))
+	r.Patch("/", httpx.Handle(h.onError, h.update))
+	r.Delete("/", httpx.Handle(h.onError, h.remove))
 }
 
 // create creates a workspace.
@@ -54,28 +52,24 @@ type CreateRequest struct {
 //	@Tags        workspaces
 //	@Accept      json
 //	@Produce     json
-//	@Param       request body CreateRequest true "Workspace to create"
+//	@Param       request body CreateWorkspaceInput true "Workspace to create"
 //	@Success     201 {object} Workspace
 //	@Failure     400 {object} httpx.Error "invalid_json or validation_failed"
 //	@Failure     409 {object} httpx.Error "conflict — slug already exists"
 //	@Failure     500 {object} httpx.Error
 //	@Router      /api/v1/workspaces [post]
 func (h *Handler) create(w http.ResponseWriter, r *http.Request) error {
-	var req CreateRequest
+	var in CreateWorkspaceInput
 
-	if err := httpx.Decode(r, &req); err != nil {
+	if err := httpx.Decode(r, &in); err != nil {
 		return err
 	}
 
-	if err := validate.Check(req); err != nil {
+	if err := validate.Check(in); err != nil {
 		return err
 	}
 
-	ws, err := h.svc.Create(r.Context(), CreateInput{
-		Name:        req.Name,
-		Slug:        req.Slug,
-		Description: req.Description,
-	})
+	ws, err := h.svc.Create(r.Context(), in)
 
 	if err != nil {
 		return err
@@ -86,13 +80,6 @@ func (h *Handler) create(w http.ResponseWriter, r *http.Request) error {
 	httpx.JSON(w, http.StatusCreated, ws)
 
 	return nil
-}
-
-// WorkspacePage is the workspace list envelope — a concrete specialization
-// of pagination.Page so generated OpenAPI schema names stay clean.
-type WorkspacePage struct {
-	Items      []Workspace `json:"items"`
-	NextCursor string      `json:"next_cursor"`
 }
 
 // list returns workspaces newest first, cursor-paginated.
@@ -134,7 +121,7 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	httpx.JSON(w, http.StatusOK, WorkspacePage{Items: page.Items, NextCursor: page.NextCursor})
+	httpx.JSON(w, http.StatusOK, WorkspacePage(*page))
 
 	return nil
 }
@@ -144,14 +131,14 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) error {
 //	@Summary Get a workspace
 //	@Tags    workspaces
 //	@Produce json
-//	@Param   workspace_id path string true "Workspace id (UUID)"
+//	@Param   workspaceID path string true "Workspace id (UUID)"
 //	@Success 200 {object} Workspace
 //	@Failure 400 {object} httpx.Error "invalid_id"
 //	@Failure 404 {object} httpx.Error "not_found"
 //	@Failure 500 {object} httpx.Error
 //	@Router  /api/v1/workspaces/{workspace_id} [get]
 func (h *Handler) get(w http.ResponseWriter, r *http.Request) error {
-	id, err := workspaceID(r)
+	id, err := httpx.PathUUID(r, "workspace_id")
 
 	if err != nil {
 		return err
@@ -168,11 +155,6 @@ func (h *Handler) get(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-type UpdateRequest struct {
-	Name        *string `json:"name"        validate:"omitempty,max=100" example:"Acme Inc (renamed)"`
-	Description *string `json:"description" validate:"omitempty,max=500" example:"Updated description"`
-}
-
 // update partially updates a workspace.
 //
 //	@Summary     Partially update a workspace
@@ -180,34 +162,31 @@ type UpdateRequest struct {
 //	@Tags        workspaces
 //	@Accept      json
 //	@Produce     json
-//	@Param       workspace_id path string true "Workspace id (UUID)"
-//	@Param       request body UpdateRequest true "Fields to update"
+//	@Param       workspaceID path string true "Workspace id (UUID)"
+//	@Param       request body UpdateWorkspaceInput true "Fields to update"
 //	@Success     200 {object} Workspace
-//	@Failure     400 {object} httpx.Error "invalid_json, validation_failed, or invalid_id"
+//	@Failure     400 {object} httpx.Error
 //	@Failure     404 {object} httpx.Error "not_found"
 //	@Failure     500 {object} httpx.Error
 //	@Router      /api/v1/workspaces/{workspace_id} [patch]
 func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
-	id, err := workspaceID(r)
+	id, err := httpx.PathUUID(r, "workspace_id")
 
 	if err != nil {
 		return err
 	}
 
-	var req UpdateRequest
+	var in UpdateWorkspaceInput
 
-	if err := httpx.Decode(r, &req); err != nil {
+	if err := httpx.Decode(r, &in); err != nil {
 		return err
 	}
 
-	if err := validate.Check(req); err != nil {
+	if err := validate.Check(in); err != nil {
 		return err
 	}
 
-	ws, err := h.svc.Update(r.Context(), id, UpdateInput{
-		Name:        req.Name,
-		Description: req.Description,
-	})
+	ws, err := h.svc.Update(r.Context(), id, in)
 
 	if err != nil {
 		return err
@@ -222,14 +201,14 @@ func (h *Handler) update(w http.ResponseWriter, r *http.Request) error {
 //
 //	@Summary Delete a workspace
 //	@Tags    workspaces
-//	@Param   workspace_id path string true "Workspace id (UUID)"
+//	@Param   workspaceID path string true "Workspace id (UUID)"
 //	@Success 204 "The workspace was deleted"
 //	@Failure 400 {object} httpx.Error "invalid_id"
 //	@Failure 404 {object} httpx.Error "not_found"
 //	@Failure 500 {object} httpx.Error
 //	@Router  /api/v1/workspaces/{workspace_id} [delete]
 func (h *Handler) remove(w http.ResponseWriter, r *http.Request) error {
-	id, err := workspaceID(r)
+	id, err := httpx.PathUUID(r, "workspace_id")
 
 	if err != nil {
 		return err
@@ -242,15 +221,4 @@ func (h *Handler) remove(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(http.StatusNoContent)
 
 	return nil
-}
-
-// workspaceID parses the path parameter; a malformed id is a client error.
-func workspaceID(r *http.Request) (uuid.UUID, error) {
-	id, err := uuid.Parse(chi.URLParam(r, "workspace_id"))
-
-	if err != nil {
-		return uuid.Nil, httpx.New(http.StatusBadRequest, "invalid_id", "workspace id must be a UUID")
-	}
-
-	return id, nil
 }

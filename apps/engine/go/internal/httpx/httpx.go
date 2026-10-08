@@ -8,6 +8,9 @@ package httpx
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
 // FieldError is one offending input field.
@@ -83,4 +86,17 @@ func Decode(r *http.Request, dst any) error {
 	}
 
 	return nil
+}
+
+// PathUUID parses a path parameter as a UUID. A malformed value yields a
+// 400 invalid_id error naming the parameter.
+func PathUUID(r *http.Request, name string) (uuid.UUID, error) {
+	id, err := uuid.Parse(chi.URLParam(r, name))
+
+	if err != nil {
+		return uuid.Nil, New(http.StatusBadRequest, "invalid_id", name+" must be a UUID")
+
+	}
+
+	return id, nil
 }

@@ -18,7 +18,55 @@ definitions:
       message:
         type: string
     type: object
-  internal_modules_workspace.CreateRequest:
+  internal_modules_teams.CreateTeamInput:
+    properties:
+      description:
+        example: FE team
+        maxLength: 500
+        type: string
+      name:
+        example: Frontend Engineers
+        maxLength: 100
+        type: string
+    required:
+    - name
+    type: object
+  internal_modules_teams.Team:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      workspace_id:
+        type: string
+    type: object
+  internal_modules_teams.TeamPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/internal_modules_teams.Team'
+        type: array
+      next_cursor:
+        type: string
+    type: object
+  internal_modules_teams.UpdateTeamInput:
+    properties:
+      description:
+        example: FE team
+        maxLength: 500
+        type: string
+      name:
+        example: Frontend Engineers
+        maxLength: 100
+        type: string
+    type: object
+  internal_modules_workspace.CreateWorkspaceInput:
     properties:
       description:
         example: The Acme engineering org
@@ -35,7 +83,7 @@ definitions:
     required:
     - name
     type: object
-  internal_modules_workspace.UpdateRequest:
+  internal_modules_workspace.UpdateWorkspaceInput:
     properties:
       description:
         example: Updated description
@@ -133,7 +181,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_modules_workspace.CreateRequest'
+          $ref: '#/definitions/internal_modules_workspace.CreateWorkspaceInput'
       produces:
       - application/json
       responses:
@@ -161,7 +209,7 @@ paths:
       parameters:
       - description: Workspace id (UUID)
         in: path
-        name: workspace_id
+        name: workspaceID
         required: true
         type: string
       responses:
@@ -186,7 +234,7 @@ paths:
       parameters:
       - description: Workspace id (UUID)
         in: path
-        name: workspace_id
+        name: workspaceID
         required: true
         type: string
       produces:
@@ -218,7 +266,7 @@ paths:
       parameters:
       - description: Workspace id (UUID)
         in: path
-        name: workspace_id
+        name: workspaceID
         required: true
         type: string
       - description: Fields to update
@@ -226,7 +274,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_modules_workspace.UpdateRequest'
+          $ref: '#/definitions/internal_modules_workspace.UpdateWorkspaceInput'
       produces:
       - application/json
       responses:
@@ -235,7 +283,7 @@ paths:
           schema:
             $ref: '#/definitions/internal_modules_workspace.Workspace'
         "400":
-          description: invalid_json, validation_failed, or invalid_id
+          description: Bad Request
           schema:
             $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
         "404":
@@ -249,6 +297,196 @@ paths:
       summary: Partially update a workspace
       tags:
       - workspaces
+  /api/v1/workspaces/{workspace_id}/teams:
+    get:
+      description: |-
+        The window is stable under concurrent writes; follow
+        next_cursor until it is empty. search matches the team
+        name case-insensitively.
+      parameters:
+      - description: Workspace id (UUID)
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Page size; defaults to 50, capped at 100
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - description: Opaque continuation token from the previous page
+        in: query
+        name: cursor
+        type: string
+      - description: Case-insensitive substring match on name
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_modules_teams.TeamPage'
+        "400":
+          description: invalid_limit, invalid_cursor, or invalid_id
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+      summary: List teams
+      tags:
+      - teams
+    post:
+      consumes:
+      - application/json
+      description: The workspace must exist; the team is scoped to it.
+      parameters:
+      - description: Workspace id (UUID)
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Team to create
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_modules_teams.CreateTeamInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_modules_teams.Team'
+        "400":
+          description: invalid_json, validation_failed, or invalid_id
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "404":
+          description: workspace does not exist
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+      summary: Create a team
+      tags:
+      - teams
+  /api/v1/workspaces/{workspace_id}/teams/{team_id}:
+    delete:
+      parameters:
+      - description: Workspace id (UUID)
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Team id (UUID)
+        in: path
+        name: team_id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: The team was deleted
+        "400":
+          description: invalid_id
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "404":
+          description: not_found
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+      summary: Delete a team
+      tags:
+      - teams
+    get:
+      parameters:
+      - description: Workspace id (UUID)
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Team id (UUID)
+        in: path
+        name: team_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_modules_teams.Team'
+        "400":
+          description: invalid_id
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "404":
+          description: not_found
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+      summary: Get a team
+      tags:
+      - teams
+    patch:
+      consumes:
+      - application/json
+      description: Only the fields present in the body change.
+      parameters:
+      - description: Workspace id (UUID)
+        in: path
+        name: workspace_id
+        required: true
+        type: string
+      - description: Team id (UUID)
+        in: path
+        name: team_id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_modules_teams.UpdateTeamInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_modules_teams.Team'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "404":
+          description: not_found
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MuttakinHasib_orchestrix_apps_engine_go_internal_httpx.Error'
+      summary: Partially update a team
+      tags:
+      - teams
   /healthz:
     get:
       description: The process is up; no dependencies are checked.
