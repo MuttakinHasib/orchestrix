@@ -11,7 +11,7 @@ type Team struct {
 
 	database.BaseEntity
 
-	WorkspaceID uuid.UUID `bun:"workspace_id,type:uuid,notnull,index" json:"workspace_id"`
+	WorkspaceID uuid.UUID `bun:"workspace_id,type:uuid,notnull" json:"workspace_id"`
 	Name        string    `bun:"name,notnull" json:"name"`
 	Description string    `bun:"description,notnull,nullzero,default:''" json:"description"`
 }
